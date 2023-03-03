@@ -40,6 +40,12 @@ class _SignUpState extends State<SignUp> {
   String? _storedImageURL;
   String? _fetchedImageURL;
 
+  @override
+  void dispose() {
+    _date.dispose();
+    super.dispose();
+  }
+
   Future<void> _saveForm() async {
     final isValid = _key.currentState!.validate();
     if (!isValid) return;

@@ -63,12 +63,14 @@ class Auth with ChangeNotifier {
             'expiryTime': _expiryTime!.toIso8601String()
           }));
       if (urlSegment == 'signInWithPassword') {
-        print('USER DATA');
-        User.m = await Firestore.fetchID(username.substring(0, 11));
-        print(User.m);
+        // print('USER DATA');
+        // User.m = await Firestore.fetchID(username.substring(0, 11));
+        // print(User.m);
       }
     } catch (error) {
-      print('ERROR IS $error');
+      // print('ERROR IS $error');
+      User.m =
+          null; // to prevent storing the user's data unnecessarily if authentication failed
       rethrow;
     }
   }
@@ -78,10 +80,12 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> login(String username, String password) async {
+    User.m = await Firestore.fetchID(username.substring(0, 11));
     return _authenticate(username, password, 'signInWithPassword');
   }
 
   Future<void> logout() async {
+    User.m = null;
     _token = null;
     _userID = null;
     _expiryTime = null;

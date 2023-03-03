@@ -51,9 +51,9 @@ class _LoginSignupState extends State<LoginSignup> {
     _key.currentState!.save();
     print('FORM SAVED');
     try {
-      // setState(() {
-      //   _isLoading = true;
-      // });
+      setState(() {
+        _isLoading = true;
+      });
       if (state == formState.login) {
         await Provider.of<Auth>(context, listen: false)
             .login(
@@ -78,6 +78,9 @@ class _LoginSignupState extends State<LoginSignup> {
         nav.pushNamed(SignUp.routeName);
       }
     } on httpException catch (error) {
+      setState(() {
+        _isLoading = false;
+      });
       var errorMsg = 'Authentication Failed! Please try again later...';
       if (error.exception.contains('EMAIL_EXISTS')) {
         errorMsg = 'Email already exists! Please login...';
@@ -93,6 +96,9 @@ class _LoginSignupState extends State<LoginSignup> {
       _showErrorDialog(errorMsg);
       Navigator.of(context).pop();
     } catch (error) {
+      setState(() {
+        _isLoading = false;
+      });
       _showErrorDialog('Authentication Failed! Please try again later...');
       Navigator.of(context).pop();
     }

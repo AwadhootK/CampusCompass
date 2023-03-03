@@ -17,15 +17,8 @@ class _HomeScreenState extends State<HomeScreen> {
   var _size = 300;
 
   @override
-  void didChangeDependencies() {
-    setState(() {
-      print('UI REBUILDING');
-    });
-    super.didChangeDependencies();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    setState(() {});
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
