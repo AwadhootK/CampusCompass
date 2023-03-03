@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/auth.dart';
 import '../helpers/myException.dart';
+import '../helpers/global_data.dart';
 import '../screens/sign_up.dart';
 
 enum formState { login, signUp }
@@ -18,6 +19,13 @@ class _LoginSignupState extends State<LoginSignup> {
   final _key = GlobalKey<FormState>();
   final Map<String, String> _user = {'username': '', 'password': ''};
   final passwordController = new TextEditingController();
+
+  @override
+  void dispose() {
+    passwordController.dispose();
+    super.dispose();
+  }
+
   formState state = formState.login;
   var _isLoading = false;
 
@@ -41,21 +49,32 @@ class _LoginSignupState extends State<LoginSignup> {
     final isValid = _key.currentState!.validate();
     if (!isValid) return;
     _key.currentState!.save();
+    print('FORM SAVED');
     try {
-      setState(() {
-        _isLoading = true;
-      });
+      // setState(() {
+      //   _isLoading = true;
+      // });
       if (state == formState.login) {
-        await Provider.of<Auth>(context, listen: false).login(
-          _user['username']!,
-          _user['password']!,
-        );
+        await Provider.of<Auth>(context, listen: false)
+            .login(
+              _user['username']!,
+              _user['password']!,
+            )
+            .then((value) => setState(() {
+                  _isLoading = false;
+                }));
       } else if (state == formState.signUp) {
+        print('IN SIGNUP');
         final nav = Navigator.of(context);
-        await Provider.of<Auth>(context, listen: false).signup(
-          _user['username']!,
-          _user['password']!,
-        );
+        await Provider.of<Auth>(context, listen: false)
+            .signup(
+              _user['username']!,
+              _user['password']!,
+            )
+            .then((value) => setState(() {
+                  _isLoading = false;
+                }));
+        print('DONE SIGN UP');
         nav.pushNamed(SignUp.routeName);
       }
     } on httpException catch (error) {
@@ -72,12 +91,11 @@ class _LoginSignupState extends State<LoginSignup> {
         errorMsg = 'Please enter a valid password!';
       }
       _showErrorDialog(errorMsg);
+      Navigator.of(context).pop();
     } catch (error) {
       _showErrorDialog('Authentication Failed! Please try again later...');
+      Navigator.of(context).pop();
     }
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   void _toggleFormState() {

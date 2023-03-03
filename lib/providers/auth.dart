@@ -5,6 +5,8 @@ import 'dart:convert';
 import 'dart:async';
 
 import '../helpers/myException.dart';
+import '../helpers/global_data.dart';
+import '../services/firestore_crud.dart';
 
 class Auth with ChangeNotifier {
   String? _token;
@@ -57,9 +59,16 @@ class Auth with ChangeNotifier {
           json.encode({
             'token': _token,
             'userID': _userID,
+            'username': username.substring(0, 11),
             'expiryTime': _expiryTime!.toIso8601String()
           }));
+      if (urlSegment == 'signInWithPassword') {
+        print('USER DATA');
+        User.m = await Firestore.fetchID(username.substring(0, 11));
+        print(User.m);
+      }
     } catch (error) {
+      print('ERROR IS $error');
       rethrow;
     }
   }
@@ -113,6 +122,9 @@ class Auth with ChangeNotifier {
     _userID = extractedData['userID'];
     _token = extractedData['token'];
     _expiryTime = DateTime.parse(extractedData['expiryTime']);
+    User.m =
+        await Firestore.fetchID(extractedData['username'].substring(0, 11));
+
     autoLogOut();
     notifyListeners();
     return true;

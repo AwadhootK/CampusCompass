@@ -8,6 +8,7 @@ class Firestore {
 
   static Future<void> post(Map<String, String> m) async {
     // return cr.add(m);
+    print('DATA POSTING');
     return cr.doc(m['UID']).set(m);
   }
 

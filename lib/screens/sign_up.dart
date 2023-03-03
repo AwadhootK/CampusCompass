@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
+import '../helpers/global_data.dart';
 import '../services/firestore_crud.dart';
 
 enum branch { CE, IT, ENTC }
@@ -43,8 +44,13 @@ class _SignUpState extends State<SignUp> {
     final isValid = _key.currentState!.validate();
     if (!isValid) return;
     _key.currentState!.save();
-    await Firestore.post(_userData)
-        .then((value) => Navigator.of(context).pop());
+    // print('FORM SAVED!!');
+    // print(_userData);
+    await Firestore.post(_userData).then((value) {
+      User.m = _userData;
+      // print('DATA POSTED');
+      Navigator.of(context).pop();
+    });
   }
 
   Future<void> _cameraImage() async {
