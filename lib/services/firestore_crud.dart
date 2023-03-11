@@ -1,21 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'dart:convert';
+import '../helpers/global_data.dart';
 
 class Firestore {
-  static CollectionReference cr =
-      FirebaseFirestore.instance.collection('users');
-
-  static Future<void> post(Map<String, String> m) async {
-    // return cr.add(m);
+  String path;
+  late CollectionReference cr1;
+  Firestore({required this.path}) {
+    cr1 = FirebaseFirestore.instance.collection(path);
+  }
+  Future<void> post(Map<String, String> m) async {
+    // return cr1.add(m);
     print('DATA POSTING');
-    return cr.doc(m['UID']).set(m);
+    return cr1.doc(m['UID']).set(m);
   }
 
-  static Future<List> fetchAll() async {
+  Future<List> fetchAll() async {
     List l = [];
     try {
-      await cr.get().then((querySnapshot) {
+      await cr1.get().then((querySnapshot) {
         // print(querySnapshot.size);
         var docs = querySnapshot.docs
             .forEach((e) => l.add(json.decode(json.encode(e.data()))));
@@ -26,26 +29,37 @@ class Firestore {
     return l;
   }
 
-  static Future<Map> fetchID(String UID) async {
-    return cr
+  Future<Map> fetchID(String UID) async {
+    return cr1
         .doc(UID)
         .get()
         .then((value) => json.decode(json.encode(value.data())));
   }
 
-  static Future<void> update(String UID, Map<String, String> m) async {
+  Future<void> update(String UID, Map<String, String> m) async {
     try {
-      await cr.doc(UID).update(m);
+      await cr1.doc(UID).update(m);
     } catch (error) {
       rethrow;
     }
   }
 
-  static Future<void> delete(String UID) async {
+  Future<void> delete(String UID) async {
     try {
-      await cr.doc(UID).delete();
+      await cr1.doc(UID).delete();
     } catch (error) {
       rethrow;
     }
+  }
+
+  Future<void> fetchClubID() async {
+    return User.clubs.forEach(
+      (key, value) async {
+        var m = await cr1.doc(key).get();
+        var x = (json.decode(json.encode(m.data())));
+        User.clubs[key] = x['UID'].toString();
+        // print(User.clubs[key]);
+      },
+    );
   }
 }

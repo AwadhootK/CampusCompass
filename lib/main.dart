@@ -7,6 +7,8 @@ import './providers/auth.dart';
 import './screens/home_screen.dart';
 import './screens/splash_screen.dart';
 import './screens/sign_up.dart';
+import './screens/clubs_screen.dart';
+import './screens/club_events.dart';
 
 void main() async {
   // Initialize the firestore database
@@ -30,14 +32,15 @@ class myApp extends StatelessWidget {
         builder: (context, authObj, _) => MaterialApp(
           debugShowCheckedModeBanner: false,
           home: authObj.isAuth()
-              ? HomeScreen()
+              ? Clubs()
               : FutureBuilder(
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const SplashScreen();
                     }
                     if (snapshot.data == true) {
-                      return HomeScreen();
+                      print('logged');
+                      return Clubs();
                     } else {
                       return LoginSignup();
                     }
@@ -45,7 +48,10 @@ class myApp extends StatelessWidget {
                   future: authObj.tryAutoLogin(),
                 ),
           routes: {
+            // '/': (context) => ClubEvent(),
             SignUp.routeName: (context) => SignUp(),
+            ClubEvent.routeName: (context) => ClubEvent(),
+            Clubs.routeName: (context) => Clubs(),
           },
         ),
       ),

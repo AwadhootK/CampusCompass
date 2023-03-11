@@ -80,7 +80,9 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> login(String username, String password) async {
-    User.m = await Firestore.fetchID(username.substring(0, 11));
+    User.m = await Firestore(path: 'users').fetchID(username.substring(0, 11));
+    await Firestore(path: 'clubs').fetchClubID();
+    print(User.clubs);
     return _authenticate(username, password, 'signInWithPassword');
   }
 
@@ -126,9 +128,9 @@ class Auth with ChangeNotifier {
     _userID = extractedData['userID'];
     _token = extractedData['token'];
     _expiryTime = DateTime.parse(extractedData['expiryTime']);
-    User.m =
-        await Firestore.fetchID(extractedData['username'].substring(0, 11));
-
+    User.m = await Firestore(path: 'users')
+        .fetchID(extractedData['username'].substring(0, 11));
+    Firestore(path: 'clubs').fetchClubID().then((value) => print(User.clubs));
     autoLogOut();
     notifyListeners();
     return true;

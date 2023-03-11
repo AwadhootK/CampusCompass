@@ -50,11 +50,11 @@ class _SignUpState extends State<SignUp> {
     final isValid = _key.currentState!.validate();
     if (!isValid) return;
     _key.currentState!.save();
-    // print('FORM SAVED!!');
+    print('FORM SAVED!!');
     // print(_userData);
-    await Firestore.post(_userData).then((value) {
+    await Firestore(path: 'users').post(_userData).then((value) {
       User.m = _userData;
-      // print('DATA POSTED');
+      print('DATA POSTED');
       Navigator.of(context).pop();
     });
   }
