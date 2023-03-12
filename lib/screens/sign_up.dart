@@ -200,6 +200,7 @@ class _SignUpState extends State<SignUp> {
                   ),
                   onTap: () async {
                     DateTime? _pickedDOB = await showDatePicker(
+                      initialDatePickerMode: DatePickerMode.day,
                       context: context,
                       initialDate: DateTime.now(),
                       firstDate: DateTime(2000),
