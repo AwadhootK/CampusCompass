@@ -8,4 +8,12 @@ class User {
     'GDU': '',
     'GDSC': '',
   };
+  static Map<String, Map<String, Map<String, String>>> events = {
+    'PASC': {},
+    'PCSB': {},
+    'PISB': {},
+    'Pictoreal': {},
+    'GDU': {},
+    'GDSC': {},
+  };
 }

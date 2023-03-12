@@ -54,7 +54,7 @@ class _SignUpState extends State<SignUp> {
     // print(_userData);
     await Firestore(path: 'users').post(_userData).then((value) {
       User.m = _userData;
-      print('DATA POSTED');
+      // print('DATA POSTED');
       Navigator.of(context).pop();
     });
   }
@@ -342,11 +342,11 @@ class _SignUpState extends State<SignUp> {
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 500),
                   curve: Curves.easeInOut,
-                  height: _fetchedImageURL == null ? 0 : 500,
-                  width: _fetchedImageURL == null ? 0 : 500,
-                  child: _fetchedImageURL == null
+                  height: _storedImageURL == null ? 0 : 500,
+                  width: _storedImageURL == null ? 0 : 500,
+                  child: _storedImageURL == null
                       ? null
-                      : Image.memory(base64Decode(_fetchedImageURL!)),
+                      : Image.memory(base64Decode(_storedImageURL!)),
                 ),
                 // TEMP:
                 // TextButton(

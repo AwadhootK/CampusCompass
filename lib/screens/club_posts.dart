@@ -1,232 +1,205 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:firebase/screens/clubs_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import '../services/firestore_crud.dart';
+import '../helpers/global_data.dart';
 
 void main() {
-  runApp(MyWidget());
+  runApp(ClubsForm());
 }
 
-class MyWidget extends StatefulWidget {
-  MyWidget({super.key});
+class ClubsForm extends StatefulWidget {
+  static const routeName = '/clubs_form';
 
   @override
-  State<MyWidget> createState() => _MyWidgetState();
+  State<ClubsForm> createState() => _MyWidgetState();
 }
 
-class _MyWidgetState extends State<MyWidget> {
+class _MyWidgetState extends State<ClubsForm> {
+  final descriptionFocusNode = FocusNode();
+  final dateFocusNode = FocusNode();
+  final posterFocusNode = FocusNode();
+  TextEditingController dateTime = TextEditingController();
+  File? storedImage;
+  String? storedImg;
+  final formkey = GlobalKey<FormState>();
+  Map<String, String> map_1 = {
+    'title': "",
+    'date': "",
+    'description': "",
+    'poster': "",
+    'club': "",
+  };
+
+  @override
+  void dispose() {
+    descriptionFocusNode.dispose();
+    dateFocusNode.dispose();
+    posterFocusNode.dispose();
+    dateTime.dispose();
+    super.dispose();
+  }
+
+  Future<void> _saveform() async {
+    final isValid = formkey.currentState!.validate();
+    if (!isValid) return;
+    formkey.currentState!.save();
+    map_1['club'] = ModalRoute.of(context)!.settings.arguments as String;
+    await Firestore(path: 'clubs').putEvent(map_1).then((value) {
+      Navigator.of(context).pop();
+      Navigator.of(context).pop();
+    });
+  }
+
+  Future<void> _cameraImage() async {
+    final imageFile = await ImagePicker().pickImage(
+      source: ImageSource.camera,
+      maxHeight: 200,
+      maxWidth: 200,
+    );
+    if (imageFile == null) return;
+    setState(() {
+      storedImage = File(imageFile.path);
+      storedImg = base64UrlEncode(storedImage!.readAsBytesSync());
+      map_1['poster'] = storedImg ?? '';
+    });
+  }
+
+  Future<void> _fileImage() async {
+    final imageFile = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      maxHeight: 200,
+      maxWidth: 200,
+    );
+    if (imageFile == null) return;
+    setState(() {
+      storedImage = File(imageFile.path);
+      storedImg = base64UrlEncode(storedImage!.readAsBytesSync());
+      map_1['poster'] = storedImg ?? '';
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final _descriptionFocusNode = FocusNode();
-    final _dateFocusNode = FocusNode();
-    final _posterFocusNode = FocusNode();
-    TextEditingController dateTime = TextEditingController();
-    File? _storedImage;
-    String? _storedImg;
-    String? _fetchedImg;
-    final _form = GlobalKey<FormState>();
-    Map<String, String> map_1 = {
-      'title': "",
-      'date': "",
-      'description': "",
-      'poster': "",
-    };
-
-    @override
-    void dispose() {
-      _descriptionFocusNode.dispose();
-      _dateFocusNode.dispose();
-      _posterFocusNode.dispose();
-      dateTime.dispose();
-      super.dispose();
-    }
-
-    void _saveform() {
-      // _form.currentState!.validate();
-      print('called');
-      _form.currentState!.save();
-      print('form saved');
-      print(map_1);
-    }
-
-    Future<void> _cameraImage() async {
-      final imageFile = await ImagePicker().pickImage(
-        source: ImageSource.camera,
-        maxHeight: 200,
-        maxWidth: 200,
-      );
-      if (imageFile == null) return;
-      setState(() {
-        _storedImage = File(imageFile.path);
-        _storedImg = base64UrlEncode(_storedImage!.readAsBytesSync());
-        print(_storedImg);
-        map_1['poster'] = _storedImg ?? '';
-      });
-    }
-
-    Future<void> _fileImage() async {
-      final imageFile = await ImagePicker().pickImage(
-        source: ImageSource.gallery,
-        maxHeight: 200,
-        maxWidth: 200,
-      );
-      if (imageFile == null) return;
-      setState(() {
-        _storedImage = File(imageFile.path);
-        _storedImg = base64UrlEncode(_storedImage!.readAsBytesSync());
-
-        map_1['poster'] = _storedImg ?? "";
-      });
-    }
-
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: Text("POSTS FORM")),
-        // backgroundColor: Colors.black,
-        body: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Form(
-            key: _form,
-            child: SingleChildScrollView(
-                child: Column(children: [
-              TextFormField(
-                decoration: const InputDecoration(
-                  labelText: "TITLE",
-                  labelStyle: TextStyle(fontStyle: FontStyle.italic),
+    return Scaffold(
+      appBar: AppBar(title: const Text("POSTS FORM")),
+      // backgroundColor: Colors.black,
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Form(
+          key: formkey,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                TextFormField(
+                  decoration: const InputDecoration(
+                    label: Text("TITLE"),
+                    labelStyle: TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                  keyboardType: TextInputType.text,
+                  validator: (value) {
+                    if (value == null) return 'Please enter a value';
+                    return null;
+                  },
+                  onSaved: (value) {
+                    map_1['title'] = value.toString();
+                  },
                 ),
-                keyboardType: TextInputType.text,
-                // onFieldSubmitted: (_) {
-                //   FocusScope.of(context).requestFocus(_dateFocusNode);
-                // },
-                onSaved: (value) {
-                  map_1['title'] = value.toString();
-                },
-              ),
-              // TextField(  //my code not working
-              //   controller: dateTime,
-              //   decoration: const InputDecoration(
-              //     icon: Icon(
-              //       Icons.calendar_today_rounded,
-              //     ),
-              //     labelText: "DATE",
-              //     labelStyle: TextStyle(fontStyle: FontStyle.italic),
-              //   ),
-              //   // keyboardType: TextInputType.datetime,
-              //   onTap: () async {
-              //     print("hi");
-              //     DateTime? picked = await showDatePicker(
-              //         context: context,
-              //         initialDate: new DateTime.now(),
-              //         firstDate: new DateTime(1999),
-              //         lastDate: new DateTime(2100));
-
-              //     if (picked != null) {
-              //       setState(() {
-              //         dateTime.text = DateFormat('yyyy-MM-dd').format(picked);
-              //       });
-              //     }
-              //     ;
-              //     FocusScope.of(context).requestFocus(_descriptionFocusNode);
-
-              //     map_1['date'] = dateTime.text;
-              //   },
-              //   focusNode: _dateFocusNode,
-              // ),
-              TextField(
-                //awadhoot's code not working
-                controller: dateTime,
-                // focusNode: _dateFocusNode,
-                decoration: const InputDecoration(
-                  label: Text('Date of Event'),
-                  icon: Icon(Icons.calendar_month),
+                TextField(
+                  controller: dateTime,
+                  decoration: const InputDecoration(
+                    label: Text('Date of Event'),
+                    icon: Icon(Icons.calendar_month),
+                  ),
+                  onTap: () async {
+                    DateTime? _picked = await showDatePicker(
+                      initialDatePickerMode: DatePickerMode.day,
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2100),
+                    );
+                    if (_picked != null) {
+                      setState(() {
+                        dateTime.text =
+                            DateFormat('yyyy-MM-dd').format(_picked);
+                        map_1['date'] = dateTime.text;
+                      });
+                    }
+                  },
                 ),
-                onTap: () async {
-                  print("HERE");
-                  DateTime? _picked = await showDatePicker(
-                    initialDatePickerMode: DatePickerMode.day,
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2100),
-                  );
-                  if (_picked != null) {
-                    setState(() {
-                      dateTime.text = DateFormat('yyyy-MM-dd').format(_picked);
-                      map_1['date'] = dateTime.text;
-                    });
-                  }
-                },
-              ),
-              TextFormField(
-                decoration: const InputDecoration(
-                  labelText: "DESCRIPTION",
-                  labelStyle: TextStyle(fontStyle: FontStyle.italic),
+                TextFormField(
+                  decoration: const InputDecoration(
+                    labelText: "DESCRIPTION",
+                    labelStyle: TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                  focusNode: descriptionFocusNode,
+                  keyboardType: TextInputType.multiline,
+                  onFieldSubmitted: (_) {
+                    FocusScope.of(context).requestFocus(posterFocusNode);
+                  },
+                  validator: (value) {
+                    if (value == null) return 'Please provide a description';
+                    return null;
+                  },
+                  onSaved: (value) {
+                    map_1['description'] = value.toString();
+                  },
                 ),
-                focusNode: _descriptionFocusNode,
-                keyboardType: TextInputType.multiline,
-                onFieldSubmitted: (_) {
-                  FocusScope.of(context).requestFocus(_posterFocusNode);
-                },
-                onSaved: (value) {
-                  map_1['description'] = value.toString();
-                },
-              ),
-
-              // TextField(
-              //     focusNode: _posterFocusNode,
-              //     decoration: InputDecoration(
-              //       label: Text('Enter an Image'),
-              //     ),
-              //     textAlign: TextAlign.left,
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Enter an Image",
-                  style: TextStyle(fontStyle: FontStyle.italic),
+                const SizedBox(
+                  height: 20,
                 ),
-              ),
-              const SizedBox(
-                height: 40,
-              ),
-              Container(
-                color: Color.fromARGB(255, 152, 182, 207),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    IconButton(
-                        onPressed: _cameraImage,
-                        icon: const Icon(Icons.camera)),
-                    IconButton(
-                        onPressed: _fileImage,
-                        icon: const Icon(Icons.file_copy)),
-                  ],
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Enter an Image",
+                    style: TextStyle(fontStyle: FontStyle.italic),
+                  ),
                 ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              AnimatedContainer(
-                color: Colors.blueAccent,
-                height: _storedImage == null ? 0 : 500,
-                width: _storedImage == null ? 0 : 500,
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.easeInOut,
-                child: _storedImage == null
-                    ? null
-                    : Image.file(File(_storedImage!.path)),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              const SizedBox(height: 20),
-              IconButton(
-                // ignore: sort_child_properties_last
-                icon: const Icon(Icons.save),
-                onPressed: () => _saveform(),
-              ),
-            ])),
+                const SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  color: const Color.fromARGB(255, 152, 182, 207),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      IconButton(
+                          onPressed: _cameraImage,
+                          icon: const Icon(Icons.camera)),
+                      IconButton(
+                          onPressed: _fileImage,
+                          icon: const Icon(Icons.file_copy)),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.easeInOut,
+                  height: storedImage == null ? 0 : 300,
+                  width: storedImage == null ? 0 : 300,
+                  child: storedImage == null
+                      ? null
+                      : Image.memory(base64Decode(storedImg!)),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                const SizedBox(height: 20),
+                IconButton(
+                  // ignore: sort_child_properties_last
+                  icon: const Icon(Icons.save),
+                  onPressed: () => _saveform(),
+                ),
+              ],
+            ),
           ),
         ),
       ),

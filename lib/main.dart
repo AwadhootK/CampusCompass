@@ -9,6 +9,8 @@ import './screens/splash_screen.dart';
 import './screens/sign_up.dart';
 import './screens/clubs_screen.dart';
 import './screens/club_events.dart';
+import './screens/event_description.dart';
+import './screens/club_posts.dart';
 
 void main() async {
   // Initialize the firestore database
@@ -52,6 +54,8 @@ class myApp extends StatelessWidget {
             SignUp.routeName: (context) => SignUp(),
             ClubEvent.routeName: (context) => ClubEvent(),
             Clubs.routeName: (context) => Clubs(),
+            EventDescription.routeName: (context) => EventDescription(),
+            ClubsForm.routeName: (context) => ClubsForm(),
           },
         ),
       ),
