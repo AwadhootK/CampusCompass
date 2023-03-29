@@ -16,6 +16,7 @@ class _ClubsState extends State<Clubs> {
   @override
   void initState() {
     Firestore(path: 'clubs').fetchClubEvents();
+    print(User.m);
     super.initState();
   }
 
