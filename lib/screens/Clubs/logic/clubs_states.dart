@@ -1,16 +1,26 @@
 part of 'clubs_cubit.dart';
 
-abstract class ClubStates{}
+abstract class ClubStates {}
 
-class ClubLoadingState extends ClubStates{}
+class ClubLoadingState extends ClubStates {}
 
-class ClubsLoadedState extends ClubStates{
-  List<String> l = ['PASC', 'PCSB', 'PISB', 'Pictoreal', 'GDU', 'GDSC'];
+class ClubsLoadedState extends ClubStates {
+  List<String> l = [
+    'PASC',
+    'PCSB',
+    'PISB',
+    'Pictoreal',
+    'GDU',
+    'GDSC',
+    'NSS',
+    'Art Circle',
+    'DebSoc',
+  ];
   final Map<String, Map<String, Map<String, String>>> events;
   ClubsLoadedState(this.events);
 }
 
-class ClubsErrorState extends ClubStates{
+class ClubsErrorState extends ClubStates {
   final String error;
   ClubsErrorState(this.error);
 }

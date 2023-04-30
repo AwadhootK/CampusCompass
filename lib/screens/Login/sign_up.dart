@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:firebase/screens/Login/logic/login_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -50,13 +52,20 @@ class _SignUpState extends State<SignUp> {
     final isValid = _key.currentState!.validate();
     if (!isValid) return;
     _key.currentState!.save();
-    print('FORM SAVED!!');
+    // print('FORM SAVED!!');
     // print(_userData);
-    await Firestore(path: 'users').post(_userData).then((value) {
-      User.m = _userData;
-      // print('DATA POSTED');
-      Navigator.of(context).pop();
-    });
+    // await Firestore(path: 'users').post(_userData).then((value) {
+    //   User.m = _userData;
+    //   // print('DATA POSTED');
+    //   Navigator.of(context).pop();
+    // });
+    await BlocProvider.of<AuthCubit>(context)
+        .postUserDetails(
+          _userData,
+        )
+        .then(
+          (value) => Navigator.of(context).pop(),
+        );
   }
 
   Future<void> _cameraImage() async {

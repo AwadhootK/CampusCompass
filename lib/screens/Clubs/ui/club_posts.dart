@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase/screens/Clubs/logic/clubs_cubit.dart';
-import 'package:firebase/screens/Clubs/ui/clubs_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -48,6 +47,7 @@ class _MyWidgetState extends State<ClubsForm> {
     BlocProvider.of<ClubsCubit>(context).putEvent(map_1).then((value) {
       Navigator.of(context).pop();
       Navigator.of(context).pop();
+      BlocProvider.of<ClubsCubit>(context).fetchClubEvents();
     });
   }
 

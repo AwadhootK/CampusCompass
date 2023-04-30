@@ -20,12 +20,16 @@ class ClubsCubit extends Cubit<ClubStates> {
           Map<String, Map<String, String>> event = {};
           for (int i = 0; i < snapshot.docs.length; i++) {
             event[snapshot.docs[i]['title']] = snapshot.docs[i].data().map(
-                (eventkey, eventvalue) =>
-                    MapEntry(eventkey.toString(), eventvalue.toString()));
+                  (eventkey, eventvalue) => MapEntry(
+                    eventkey.toString(),
+                    eventvalue.toString(),
+                  ),
+                );
           }
           User.events.update(key, (val) => event);
         },
       );
+      log('events fetched');
       emit(ClubsLoadedState(User.events));
     } catch (error) {
       emit(ClubsErrorState(error.toString()));

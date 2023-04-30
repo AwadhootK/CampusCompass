@@ -32,8 +32,18 @@ class ClubsScreen extends StatelessWidget {
                       return GestureDetector(
                         onTap: () {
                           // print(User.events);
-                          Navigator.of(context).pushNamed(ClubEvent.routeName,
-                              arguments: element);
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => BlocProvider.value(
+                                value: BlocProvider.of<ClubsCubit>(context)
+                                  ..fetchClubEvents(),
+                                child: ClubEvent(),
+                              ),
+                              settings: RouteSettings(
+                                arguments: element,
+                              ),
+                            ),
+                          );
                         },
                         child: Card(
                           elevation: 10,

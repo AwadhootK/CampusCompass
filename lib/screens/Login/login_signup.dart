@@ -1,4 +1,6 @@
+import 'package:firebase/screens/Login/logic/login_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/auth.dart';
@@ -18,7 +20,7 @@ class LoginSignup extends StatefulWidget {
 class _LoginSignupState extends State<LoginSignup> {
   final _key = GlobalKey<FormState>();
   final Map<String, String> _user = {'username': '', 'password': ''};
-  final passwordController = new TextEditingController();
+  final passwordController = TextEditingController();
 
   @override
   void dispose() {
@@ -49,32 +51,18 @@ class _LoginSignupState extends State<LoginSignup> {
     final isValid = _key.currentState!.validate();
     if (!isValid) return;
     _key.currentState!.save();
-    print('FORM SAVED');
     try {
-      setState(() {
-        _isLoading = true;
-      });
       if (state == formState.login) {
-        await Provider.of<Auth>(context, listen: false)
-            .login(
-              _user['username']!,
-              _user['password']!,
-            )
-            .then((value) => setState(() {
-                  _isLoading = false;
-                }));
+        await BlocProvider.of<AuthCubit>(context).login(
+          _user['username']!,
+          _user['password']!,
+        );
       } else if (state == formState.signUp) {
-        print('IN SIGNUP');
         final nav = Navigator.of(context);
-        await Provider.of<Auth>(context, listen: false)
-            .signup(
-              _user['username']!,
-              _user['password']!,
-            )
-            .then((value) => setState(() {
-                  _isLoading = false;
-                }));
-        print('DONE SIGN UP');
+        await BlocProvider.of<AuthCubit>(context).signup(
+          _user['username']!,
+          _user['password']!,
+        );
         nav.pushNamed(SignUp.routeName);
       }
     } on httpException catch (error) {

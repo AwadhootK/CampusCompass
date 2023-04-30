@@ -15,5 +15,8 @@ class User {
     'Pictoreal': {},
     'GDU': {},
     'GDSC': {},
+    'NSS': {},
+    'Art Circle': {},
+    'DebSoc': {},
   };
 }

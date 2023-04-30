@@ -14,7 +14,6 @@ class ClubEvent extends StatefulWidget {
 }
 
 class _ClubEventState extends State<ClubEvent> {
-
   @override
   Widget build(BuildContext context) {
     String clubName = ModalRoute.of(context)!.settings.arguments as String;
@@ -23,35 +22,39 @@ class _ClubEventState extends State<ClubEvent> {
       appBar: AppBar(
         title: Text(clubName),
       ),
-      body: BlocConsumer<ClubsCubit, ClubStates>(
-        listener: (context, state) {},
-        builder: (context, state) {
-          if (state is ClubLoadingState) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is ClubsErrorState) {
-            return Center(child: Text(state.error));
-          } else {
-            return ListView.builder(
-              itemBuilder: (context, index) => GestureDetector(
-                onTap: () {
-                  //Navigate
-                  Navigator.of(context).pushNamed(EventDescription.routeName,
-                      arguments: event[index]);
-                },
-                child: Container(
-                  margin: const EdgeInsets.all(10),
-                  height: 50,
-                  width: 50,
-                  color: Colors.blue[200],
-                  child: Center(
-                      child: Text(event[index]['title'] ?? 'Unnamed Event')),
-                ),
-              ),
-              itemCount: event.length,
-            );
-          }
-        },
-      ),
+      body: event.isEmpty
+          ? const Center(child: Text('No Events'))
+          : BlocConsumer<ClubsCubit, ClubStates>(
+              listener: (context, state) {},
+              builder: (context, state) {
+                if (state is ClubLoadingState) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (state is ClubsErrorState) {
+                  return Center(child: Text(state.error));
+                } else {
+                  return ListView.builder(
+                    itemBuilder: (context, index) => GestureDetector(
+                      onTap: () {
+                        //Navigate
+                        Navigator.of(context).pushNamed(
+                            EventDescription.routeName,
+                            arguments: event[index]);
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.all(10),
+                        height: 50,
+                        width: 50,
+                        color: Colors.blue[200],
+                        child: Center(
+                            child:
+                                Text(event[index]['title'] ?? 'Unnamed Event')),
+                      ),
+                    ),
+                    itemCount: event.length,
+                  );
+                }
+              },
+            ),
       floatingActionButton: (User.m!['UID'] == User.clubs[clubName])
           ? FloatingActionButton(
               onPressed: () {
