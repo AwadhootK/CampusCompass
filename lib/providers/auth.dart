@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'dart:async';
+import 'dart:developer';
 
 import '../helpers/myException.dart';
 import '../helpers/global_data.dart';
@@ -82,7 +83,7 @@ class Auth with ChangeNotifier {
   Future<void> login(String username, String password) async {
     User.m = await Firestore(path: 'users').fetchID(username.substring(0, 11));
     await Firestore(path: 'clubs').fetchClubID();
-    print(User.clubs);
+    log(User.clubs.toString());
     return _authenticate(username, password, 'signInWithPassword');
   }
 
@@ -123,14 +124,15 @@ class Auth with ChangeNotifier {
     // token is valid -> login successful
     await Future.delayed(
       const Duration(seconds: 3),
-    ); // just to show the splash screen for 5 sec
+    ); // just to show the splash screen for 3 sec
 
     _userID = extractedData['userID'];
     _token = extractedData['token'];
     _expiryTime = DateTime.parse(extractedData['expiryTime']);
+
     User.m = await Firestore(path: 'users')
         .fetchID(extractedData['username'].substring(0, 11));
-    Firestore(path: 'clubs').fetchClubID().then((value) => print(User.clubs));
+    Firestore(path: 'clubs').fetchClubID().then((value) => log(User.clubs.toString()));
     autoLogOut();
     notifyListeners();
     return true;

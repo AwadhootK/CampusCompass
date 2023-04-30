@@ -5,8 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
-import '../helpers/global_data.dart';
-import '../services/firestore_crud.dart';
+import '../../helpers/global_data.dart';
+import '../../services/firestore_crud.dart';
 
 enum branch { CE, IT, ENTC }
 

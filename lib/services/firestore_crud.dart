@@ -73,7 +73,7 @@ class Firestore {
 
   Future<void> fetchClubEvents() async {
     User.events.forEach(
-      (key, club_val) async {
+      (key, _) async {
         var snapshot = await cr1.doc(key).collection('posts').get();
         Map<String, Map<String, String>> event = {};
         for (int i = 0; i < snapshot.docs.length; i++) {

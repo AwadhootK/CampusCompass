@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/auth.dart';
-import '../helpers/myException.dart';
-import '../helpers/global_data.dart';
-import '../screens/sign_up.dart';
+import '../../providers/auth.dart';
+import '../../helpers/myException.dart';
+import '../../helpers/global_data.dart';
+import 'sign_up.dart';
 
 enum formState { login, signUp }
 
