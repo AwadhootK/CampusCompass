@@ -33,14 +33,14 @@ class _SignUpState extends State<SignUp> {
     'ImageURL': '',
   };
   List<String> bloodgrp = ['A+', 'B+', 'O+', 'AB+', 'A-', 'B-', 'O-', 'AB-'];
-  branch? state = null;
-  gender? gen = null;
-  TextEditingController _date = TextEditingController();
+  branch? state;
+  gender? gen;
+  final TextEditingController _date = TextEditingController();
   var _dropVal = 'A+';
   final _key = GlobalKey<FormState>();
   File? _storedImage;
   String? _storedImageURL;
-  String? _fetchedImageURL;
+  // String? _fetchedImageURL;
 
   @override
   void dispose() {

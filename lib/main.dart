@@ -1,15 +1,13 @@
+import 'package:firebase/screens/BottomNavBar/logic/bottomnavbar_cubit.dart';
+import 'package:firebase/screens/BottomNavBar/ui/landing_screen.dart';
 import 'package:firebase/screens/Clubs/logic/clubs_cubit.dart';
 import 'package:firebase/screens/Clubs/ui/clubs_screen.dart';
 import 'package:firebase/screens/Login/logic/login_cubit.dart';
-import 'package:firebase/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'dart:developer';
 
 import 'screens/Login/login_signup.dart';
-import './providers/auth.dart';
 import 'screens/Login/splash_screen.dart';
 import 'screens/Login/sign_up.dart';
 import 'screens/Clubs/ui/club_events.dart';
@@ -44,10 +42,13 @@ class myApp extends StatelessWidget {
               return MultiBlocProvider(
                 providers: [
                   BlocProvider(
-                    create: (context) => ClubsCubit()..fetchClubEvents(),
+                    create: (context) => ClubsCubit(),
+                  ),
+                  BlocProvider(
+                    create: (context) => BottomNavBarCubit()..changeIndex(0),
                   ),
                 ],
-                child: HomeScreen(),
+                child: LandingPage(),
               );
             } else if (state is LoginFailedState) {
               return BlocConsumer<AuthCubit, LoginState>(
@@ -59,10 +60,14 @@ class myApp extends StatelessWidget {
                     return MultiBlocProvider(
                       providers: [
                         BlocProvider(
-                          create: (context) => ClubsCubit()..fetchClubEvents(),
+                          create: (context) => ClubsCubit(),
+                        ),
+                        BlocProvider(
+                          create: (context) =>
+                              BottomNavBarCubit()..changeIndex(0),
                         ),
                       ],
-                      child: HomeScreen(),
+                      child: LandingPage(),
                     );
                   } else if (state is LoginFailedState) {
                     return LoginSignup();

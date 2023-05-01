@@ -86,6 +86,7 @@ class AuthCubit extends Cubit<LoginState> {
     } catch (error) {
       // print('ERROR IS $error');
       log('_authenticate');
+      log(error.toString());
 
       User.m =
           null; // to prevent storing the user's data unnecessarily if authentication failed
@@ -168,8 +169,6 @@ class AuthCubit extends Cubit<LoginState> {
         const Duration(seconds: 3),
       ); // just to show the splash screen for 3 sec
 
-      emit(LoginSuccessState());
-
       _userID = extractedData['userID'];
       _token = extractedData['token'];
       _expiryTime = DateTime.parse(extractedData['expiryTime']);
@@ -180,6 +179,7 @@ class AuthCubit extends Cubit<LoginState> {
           .fetchClubID()
           .then((value) => log(User.clubs.toString()));
       autoLogOut();
+      emit(LoginSuccessState());
     } catch (error) {
       log('tryAutoLogin');
       emit(LoginError(error.toString()));

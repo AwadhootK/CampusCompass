@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:convert';
 import 'dart:developer';
 
-import '../helpers/global_data.dart';
+import 'helpers/global_data.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({super.key});
@@ -63,10 +63,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 ElevatedButton(
                     onPressed: () => setState(() {
-                          print(User.m!['ImageURL']);
+                          log(User.m!['ImageURL']);
                         }),
                     child: const Text('REFRESH')),
-                Container(
+                SizedBox(
                   height: _size.toDouble(),
                   width: _size.toDouble(),
                   child: User.m == null
