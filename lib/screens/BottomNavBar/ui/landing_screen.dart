@@ -1,11 +1,12 @@
 import 'dart:developer';
 
-import 'package:firebase/home_screen.dart';
+import 'package:firebase/helpers/global_data.dart';
 import 'package:firebase/screens/BottomNavBar/logic/bottomnavbar_cubit.dart';
 import 'package:firebase/screens/Clubs/logic/clubs_cubit.dart';
 import 'package:firebase/screens/Clubs/ui/clubs_screen.dart';
 import 'package:firebase/screens/Login/logic/login_cubit.dart';
 import 'package:firebase/screens/QR%20Code%20+%20ID/Profile_screen.dart';
+import 'package:firebase/screens/QR%20Code%20+%20ID/logic/result_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -33,31 +34,37 @@ class _LandingPageState extends State<LandingPage> {
         builder: (context, state) {
           log(state.toString());
           if (state is BottomNavProfile) {
-            return ProfileScreen();
+            return BlocProvider(
+              create: (context) => ResultCubit()
+                ..getUserData(
+                  User.m!['UID'],
+                ),
+              child: ProfileScreen(),
+            );
           } else if (state is BottomNavClubs) {
             return BlocProvider.value(
               value: BlocProvider.of<ClubsCubit>(context)..fetchClubEvents(),
-              child: ClubsScreen(),
+              child: const ClubsScreen(),
             );
           } else if (state is BottomNavLibrary) {
             return Center(
               child: Container(
                 color: Colors.blue,
-                child: Text('Library'),
+                child: const Text('Library'),
               ),
             );
           } else if (state is BottomNavAttendance) {
             return Center(
               child: Container(
                 color: Colors.green,
-                child: Text('Attendance'),
+                child: const Text('Attendance'),
               ),
             );
           } else {
             return Center(
               child: Container(
                 color: Colors.red,
-                child: Text('Error'),
+                child: const Text('Error'),
               ),
             );
           }

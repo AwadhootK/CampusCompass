@@ -1,5 +1,9 @@
+import 'package:firebase/helpers/global_data.dart';
+import 'package:firebase/screens/QR%20Code%20+%20ID/logic/result_cubit.dart';
+import 'package:firebase/screens/QR%20Code%20+%20ID/ui/result_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'Profile_screen.dart';
-import 'result_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -103,22 +107,28 @@ class _ScanQrState extends State<ScanQr> {
                             builder: (context) => ProfileScreen()));
                   }
                 }
-                debugPrint("this is the value " + val!);
+                debugPrint("this is the value $val!");
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ResultScreen(
-                              code: val.toString(),
-                              closeScreen: closeScreen,
-                              isScaned: true,
-                            )));
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BlocProvider(
+                      create: (context) =>
+                          ResultCubit()..getUserData(User.m!['UID']),
+                      child: ResultScreen(
+                        // code: val.toString(),
+                        // closeScreen: closeScreen,
+                        isScaned: true,
+                      ),
+                    ),
+                  ),
+                );
               },
             ),
           ),
           Expanded(
               child: Container(
             alignment: Alignment.center,
-            child: Text(
+            child: const Text(
               "Developed by Campus Compass",
               style: TextStyle(fontSize: 15, color: Colors.black),
             ),

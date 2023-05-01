@@ -1,8 +1,6 @@
 import 'package:firebase/helpers/global_data.dart';
-import 'package:firebase/screens/QR%20Code%20+%20ID/result_screen.dart';
+import 'package:firebase/screens/QR%20Code%20+%20ID/ui/result_screen.dart';
 
-import 'QrCode.dart';
-import 'Qr_Scan.dart';
 import 'package:flutter/material.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -30,7 +28,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             const SizedBox(
               height: 5,
             ),
-            FlipWidget(code: User.m!['UID']),
+            FlipWidget(),
           ],
         ),
       ),
