@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
-
 class ScanQr extends StatefulWidget {
   const ScanQr({super.key});
 
@@ -98,8 +97,10 @@ class _ScanQrState extends State<ScanQr> {
                       throw (barcode);
                     }
                   } catch (error) {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => ProfileScreen()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ProfileScreen()));
                   }
                 }
                 debugPrint("this is the value " + val!);
@@ -109,6 +110,7 @@ class _ScanQrState extends State<ScanQr> {
                         builder: (context) => ResultScreen(
                               code: val.toString(),
                               closeScreen: closeScreen,
+                              isScaned: true,
                             )));
               },
             ),

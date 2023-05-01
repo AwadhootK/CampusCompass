@@ -2,11 +2,8 @@ import 'package:firebase/screens/Login/logic/login_cubit.dart';
 import 'package:firebase/screens/QR%20Code%20+%20ID/Qr_Scan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 
-import '../../providers/auth.dart';
 import '../../helpers/myException.dart';
-import '../../helpers/global_data.dart';
 import 'sign_up.dart';
 
 enum formState { login, signUp }
@@ -237,11 +234,11 @@ class _LoginSignupState extends State<LoginSignup> {
                     child: TextButton(
                       onPressed: () => Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => ScanQr(),
+                          builder: (context) => const ScanQr(),
                         ),
                       ),
                       child: const Text(
-                        'Sign Up',
+                        'Verify QR Code',
                         style: TextStyle(
                           color: Colors.white,
                         ),

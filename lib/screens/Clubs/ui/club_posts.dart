@@ -87,9 +87,7 @@ class _MyWidgetState extends State<ClubsForm> {
       body: BlocConsumer<ClubsCubit, ClubStates>(
         listener: (context, state) {},
         builder: (context, state) {
-          if (state is ClubLoadingState) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is ClubsErrorState) {
+          if (state is ClubsErrorState) {
             return const Center(child: Text('Error'));
           } else {
             return Padding(

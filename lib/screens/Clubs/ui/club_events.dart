@@ -58,8 +58,17 @@ class _ClubEventState extends State<ClubEvent> {
       floatingActionButton: (User.m!['UID'] == User.clubs[clubName])
           ? FloatingActionButton(
               onPressed: () {
-                Navigator.of(context)
-                    .pushNamed(ClubsForm.routeName, arguments: clubName);
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => BlocProvider(
+                      create: (context) => ClubsCubit()..showForm(),
+                      child: ClubsForm(),
+                    ),
+                    settings: RouteSettings(
+                      arguments: clubName,
+                    ),
+                  ),
+                );
               },
               child: const Icon(Icons.add),
             )

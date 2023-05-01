@@ -36,6 +36,10 @@ class ClubsCubit extends Cubit<ClubStates> {
     }
   }
 
+  Future<void> showForm() async {
+    emit(ClubLoadingState());
+  }
+
   Future<void> putEvent(Map<String, String> event) async {
     emit(ClubLoadingState());
     try {

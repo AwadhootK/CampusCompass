@@ -88,8 +88,12 @@ class _FlipWidgetState extends State<FlipWidget>
 class ResultScreen extends StatefulWidget {
   final String code;
   final Function() closeScreen;
+  final bool? isScaned;
   const ResultScreen(
-      {super.key, required this.code, required this.closeScreen});
+      {super.key,
+      required this.code,
+      required this.closeScreen,
+      this.isScaned});
 
   @override
   State<ResultScreen> createState() => _ResultScreenState();
@@ -118,17 +122,7 @@ class _ResultScreenState extends State<ResultScreen> {
     setState(() {
       isloading = true;
     });
-
-    getUserData().then((value) => setState(() {
-          isloading = false;
-          if (Branch == "IT") {
-            _branchColor = Color.fromARGB(255, 32, 101, 157);
-          } else if (Branch == "CE") {
-            _branchColor = Color.fromARGB(255, 49, 182, 53);
-          } else {
-            _branchColor = Colors.pink.shade900;
-          }
-        }));
+    getUserData();
   }
 
   Future<void> getUserData() async {
@@ -145,6 +139,16 @@ class _ResultScreenState extends State<ResultScreen> {
         Phone = data['Phone'];
         DOB = data['DOB'];
         ImageURL = data['ImageURL'];
+        setState(() {
+          isloading = false;
+          if (Branch == "IT") {
+            _branchColor = Color.fromARGB(255, 32, 101, 157);
+          } else if (Branch == "CE") {
+            _branchColor = Color.fromARGB(255, 49, 182, 53);
+          } else {
+            _branchColor = Colors.pink.shade900;
+          }
+        });
         // log(ImageURL!);
       } else {}
     } catch (error) {
@@ -156,19 +160,45 @@ class _ResultScreenState extends State<ResultScreen> {
   Widget build(BuildContext context) {
     final String uid;
 
-    return isloading
-        ? const Center(
-            child: CircularProgressIndicator(),
-          )
-        : Padding(
-            padding: const EdgeInsets.all(25),
-            child: SingleChildScrollView(
-              child: (exist)
-                  ? Id(Name, Branch, DOB, widget.code, Phone, ImageURL,
-                      _branchColor)
-                  : page(),
+    return widget.isScaned != null
+        ? Scaffold(
+            appBar: AppBar(
+              title: const Text('VERIFY QR CODE'),
+              centerTitle: true,
             ),
-          );
+            body: FutureBuilder(
+                future: getUserData(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else {
+                    return Padding(
+                      padding: const EdgeInsets.all(25),
+                      child: SingleChildScrollView(
+                        child: (exist)
+                            ? Id(Name, Branch, DOB, widget.code, Phone,
+                                ImageURL, _branchColor)
+                            : page(),
+                      ),
+                    );
+                  }
+                }),
+          )
+        : isloading
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : Padding(
+                padding: const EdgeInsets.all(25),
+                child: SingleChildScrollView(
+                  child: (exist)
+                      ? Id(Name, Branch, DOB, widget.code, Phone, ImageURL,
+                          _branchColor)
+                      : page(),
+                ),
+              );
   }
 }
 
@@ -229,10 +259,15 @@ Widget Id(String Name, String branch, String DOB, String uid, String phone,
         Container(
           margin:
               const EdgeInsets.only(top: 50, bottom: 10, left: 100, right: 100),
-          width: 150,
+          // width: 150,
           height: 150,
           color: Colors.grey,
-          child: Image.memory(base64Decode('$ImageURl'!)),
+          child: Image.memory(
+            fit: BoxFit.cover,
+            base64Decode(
+              '$ImageURl',
+            ),
+          ),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
