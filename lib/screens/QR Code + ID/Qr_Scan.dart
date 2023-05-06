@@ -1,3 +1,5 @@
+import 'package:firebase/screens/QR%20Code%20+%20ID/Idpage.dart';
+
 import 'Profile_screen.dart';
 import 'result_screen.dart';
 import 'package:flutter/material.dart';
@@ -107,10 +109,10 @@ class _ScanQrState extends State<ScanQr> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ResultScreen(
+                        builder: (context) => IdCard(
                               code: val.toString(),
                               closeScreen: closeScreen,
-                              isScaned: true,
+                              // isScaned: true,
                             )));
               },
             ),
