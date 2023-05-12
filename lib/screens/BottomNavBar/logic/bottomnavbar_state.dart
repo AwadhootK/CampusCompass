@@ -9,3 +9,5 @@ class BottomNavProfile extends BottomNavBarState {}
 class BottomNavLibrary extends BottomNavBarState {}
 
 class BottomNavAttendance extends BottomNavBarState {}
+
+class BottomNavCanteen extends BottomNavBarState {}

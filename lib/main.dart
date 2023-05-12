@@ -87,7 +87,6 @@ class myApp extends StatelessWidget {
           },
         ),
         routes: {
-          // '/': (context) => ClubEvent(),
           SignUp.routeName: (context) => SignUp(),
           ClubEvent.routeName: (context) => ClubEvent(),
           ClubsScreen.routeName: (context) => ClubsScreen(),

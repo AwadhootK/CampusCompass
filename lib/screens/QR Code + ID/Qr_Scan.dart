@@ -1,9 +1,7 @@
-import 'package:firebase/helpers/global_data.dart';
 import 'package:firebase/screens/QR%20Code%20+%20ID/logic/result_cubit.dart';
 import 'package:firebase/screens/QR%20Code%20+%20ID/ui/result_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'Profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -17,6 +15,7 @@ class ScanQr extends StatefulWidget {
 }
 
 String? val;
+bool isScanned = true;
 
 class _ScanQrState extends State<ScanQr> {
   String? code;
@@ -63,7 +62,6 @@ class _ScanQrState extends State<ScanQr> {
                 detectionSpeed: DetectionSpeed.noDuplicates,
                 facing: CameraFacing.back,
                 detectionTimeoutMs: 1000,
-                // torchEnabled: true,
               ),
               onDetect: (capture) {
                 final List<Barcode> barcodes = capture.barcodes;
@@ -91,7 +89,6 @@ class _ScanQrState extends State<ScanQr> {
                     );
                   }
                 }
-                // debugPrint("this is the value $val!");
                 Navigator.push(
                   context,
                   MaterialPageRoute(

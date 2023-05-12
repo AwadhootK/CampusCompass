@@ -21,6 +21,8 @@ class BottomNavBarCubit extends Cubit<BottomNavBarState> {
       emit(BottomNavLibrary());
     } else if (_index == 3) {
       emit(BottomNavAttendance());
+    } else if (_index == 4) {
+      emit(BottomNavCanteen());
     } else {
       emit(BottomNavProfile());
     }

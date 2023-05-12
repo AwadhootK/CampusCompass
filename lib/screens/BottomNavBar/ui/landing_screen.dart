@@ -2,6 +2,11 @@ import 'dart:developer';
 
 import 'package:firebase/helpers/global_data.dart';
 import 'package:firebase/screens/BottomNavBar/logic/bottomnavbar_cubit.dart';
+import 'package:firebase/screens/Canteen/admin/admin_main.dart';
+import 'package:firebase/screens/Canteen/admin/admin_signup.dart';
+import 'package:firebase/screens/Canteen/admin/logic/admin_cubit.dart';
+import 'package:firebase/screens/Canteen/admin/logic/food_item_cubit.dart';
+import 'package:firebase/screens/Canteen/canteen_menu.dart';
 import 'package:firebase/screens/Clubs/logic/clubs_cubit.dart';
 import 'package:firebase/screens/Clubs/ui/clubs_screen.dart';
 import 'package:firebase/screens/Login/logic/login_cubit.dart';
@@ -21,16 +26,49 @@ class LandingPage extends StatefulWidget {
 class _LandingPageState extends State<LandingPage> {
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Campus Compass'),
-        actions: [
-          IconButton(
-            onPressed: () => BlocProvider.of<AuthCubit>(context).logout(),
-            icon: const Icon(Icons.logout),
-          ),
-        ],
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(50),
+        child: BlocBuilder<BottomNavBarCubit, BottomNavBarState>(
+          builder: (context, state) {
+            if (state is BottomNavProfile) {
+              return AppBar(
+                title: const Text('Profile'),
+                actions: [
+                  IconButton(
+                    onPressed: () {
+                      BlocProvider.of<AuthCubit>(context).logout();
+                    },
+                    icon: const Icon(Icons.logout),
+                  ),
+                ],
+              );
+            } else if (state is BottomNavCanteen) {
+              return AppBar(
+                title: const Text('Canteen'),
+                actions: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => BlocProvider(
+                            create: (context) => AdminAuthCubit(),
+                            child: AdminMain(),
+                          ),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.edit),
+                  ),
+                ],
+              );
+            } else {
+              return AppBar(
+                title: const Text('Campus Compass'),
+              );
+            }
+          },
+        ),
       ),
       body: BlocBuilder<BottomNavBarCubit, BottomNavBarState>(
         builder: (context, state) {
@@ -61,6 +99,11 @@ class _LandingPageState extends State<LandingPage> {
                 color: Colors.green,
                 child: const Text('Attendance'),
               ),
+            );
+          } else if (state is BottomNavCanteen) {
+            return BlocProvider(
+              create: (context) => FoodItemCubit()..fetchFoodItems(),
+              child: CanteenMenu(),
             );
           } else {
             return Center(
@@ -99,6 +142,10 @@ class _LandingPageState extends State<LandingPage> {
             label: 'Attendance',
             backgroundColor: Colors.yellow,
           ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.food_bank),
+              label: 'Food',
+              backgroundColor: Colors.purple),
         ],
       ),
     );

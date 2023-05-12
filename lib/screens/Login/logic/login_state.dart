@@ -26,3 +26,5 @@ class UserDataPosted extends LoginState {
   final Map<String, String> userData;
   UserDataPosted(this.userData);
 }
+
+class AdminSuccessState extends LoginState {}
