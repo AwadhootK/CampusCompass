@@ -9,7 +9,8 @@ import 'package:flutter/services.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 class ScanQr extends StatefulWidget {
-  const ScanQr({super.key});
+  bool isLogin;
+  ScanQr({required this.isLogin});
 
   @override
   State<ScanQr> createState() => _ScanQrState();
@@ -18,11 +19,6 @@ class ScanQr extends StatefulWidget {
 String? val;
 
 class _ScanQrState extends State<ScanQr> {
-  bool scanCompleted = false;
-  void closeScreen() {
-    scanCompleted = false;
-  }
-
   String? code;
   @override
   Widget build(BuildContext context) {
@@ -62,29 +58,11 @@ class _ScanQrState extends State<ScanQr> {
           )),
           Expanded(
             flex: 3,
-            // child: MobileScanner(
-            //   onDetect: (barcode) {
-            //     if (!scanCompleted) {
-            //       code = barcode.raw.toString();
-            //       scanCompleted = true;
-            //       String Code = code.toString();
-            //       print("hello all " + code!);
-
-            // Navigator.push(
-            //     context,
-            //     // MaterialPageRoute(builder: (context) => Idcard(code!)))
-            //     MaterialPageRoute(
-            //         builder: (context) => ResultScreen(
-            //               code: Code,
-            //               closeScreen: closeScreen,
-            //             )));
-            // }
-            //   },
-            // ),
             child: MobileScanner(
               controller: MobileScannerController(
                 detectionSpeed: DetectionSpeed.noDuplicates,
                 facing: CameraFacing.back,
+                detectionTimeoutMs: 1000,
                 // torchEnabled: true,
               ),
               onDetect: (capture) {
@@ -92,7 +70,6 @@ class _ScanQrState extends State<ScanQr> {
                 final Uint8List? image = capture.image;
 
                 for (final barcode in barcodes) {
-                  // debugPrint('Barcode found! ${barcode.rawValue}');
                   try {
                     if (barcode.rawValue != null) {
                       val = barcode.rawValue.toString();
@@ -101,25 +78,28 @@ class _ScanQrState extends State<ScanQr> {
                       throw (barcode);
                     }
                   } catch (error) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ProfileScreen(),
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Error: $error',
+                          style: const TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                        backgroundColor: Colors.red,
                       ),
                     );
                   }
                 }
-                debugPrint("this is the value $val!");
+                // debugPrint("this is the value $val!");
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => BlocProvider(
-                      create: (context) =>
-                          ResultCubit()..getUserData(User.m!['UID']),
+                      create: (context) => ResultCubit()..getUserData(val!),
                       child: ResultScreen(
                         code: val.toString(),
-                        closeScreen: closeScreen,
-                        // isScaned: true,
+                        isLogin: widget.isLogin,
                       ),
                     ),
                   ),

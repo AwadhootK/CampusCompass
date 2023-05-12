@@ -8,9 +8,9 @@ class ResultCubit extends Cubit<ResultState> {
   Future<void> getUserData(String code) async {
     emit(ResultLoading());
     try {
-      final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+      final FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
       DocumentSnapshot documentSnapshot =
-          await _firebaseFirestore.collection('users').doc(code).get();
+          await firebaseFirestore.collection('users').doc(code).get();
       if (documentSnapshot.exists) {
         Map<String, dynamic> data =
             documentSnapshot.data() as Map<String, dynamic>;

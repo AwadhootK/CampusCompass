@@ -2,8 +2,7 @@ import 'dart:developer';
 
 import 'package:firebase/helpers/global_data.dart';
 import 'package:firebase/screens/QR%20Code%20+%20ID/logic/result_cubit.dart';
-import 'package:firebase/screens/QR%20Code%20+%20ID/ui/result_screen.dart';
-
+import './ui/flip_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -19,8 +18,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    log('USER DATA: ');
-    log(User.m!['UID'].toString());
 
     return Scaffold(
       body: BlocConsumer<ResultCubit, ResultState>(
@@ -41,6 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   FlipWidget(
                     code: User.m!['UID'],
+                    isLogin: true,
                   ),
                 ],
               ),

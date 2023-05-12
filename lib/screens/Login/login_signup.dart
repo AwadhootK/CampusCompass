@@ -234,7 +234,7 @@ class _LoginSignupState extends State<LoginSignup> {
                     child: TextButton(
                       onPressed: () => Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => const ScanQr(),
+                          builder: (context) => ScanQr(isLogin: false),
                         ),
                       ),
                       child: const Text(
