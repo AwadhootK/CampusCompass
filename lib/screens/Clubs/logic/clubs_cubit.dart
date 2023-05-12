@@ -2,7 +2,6 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase/helpers/global_data.dart';
-import 'package:firebase/services/firestore_crud.dart';
 part 'clubs_states.dart';
 
 class ClubsCubit extends Cubit<ClubStates> {

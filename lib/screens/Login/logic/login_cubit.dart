@@ -113,6 +113,7 @@ class AuthCubit extends Cubit<LoginState> {
 
   Future<void> login(String username, String password) async {
     User.m = await Firestore(path: 'users').fetchID(username.substring(0, 11));
+    // log(User.m.toString());
     await Firestore(path: 'clubs').fetchClubID();
     log(User.clubs.toString());
     return _authenticate(username, password, 'signInWithPassword');
@@ -175,6 +176,9 @@ class AuthCubit extends Cubit<LoginState> {
 
       User.m = await Firestore(path: 'users')
           .fetchID(extractedData['username'].substring(0, 11));
+
+      // log(User.m.toString());
+
       Firestore(path: 'clubs')
           .fetchClubID()
           .then((value) => log(User.clubs.toString()));

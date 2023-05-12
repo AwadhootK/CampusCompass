@@ -67,7 +67,7 @@ class myApp extends StatelessWidget {
                               BottomNavBarCubit()..changeIndex(0),
                         ),
                       ],
-                      child: LandingPage(),
+                      child: const LandingPage(),
                     );
                   } else if (state is LoginFailedState) {
                     return LoginSignup();

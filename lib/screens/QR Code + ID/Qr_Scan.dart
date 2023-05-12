@@ -40,12 +40,12 @@ class _ScanQrState extends State<ScanQr> {
         backgroundColor: Colors.teal,
       ),
       body: Container(
-        padding: EdgeInsets.all(15),
+        padding: const EdgeInsets.all(15),
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           Expanded(
               child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
+            children: const [
               Text(
                 "Place QR in the box to scan ",
                 style: TextStyle(
@@ -102,9 +102,11 @@ class _ScanQrState extends State<ScanQr> {
                     }
                   } catch (error) {
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ProfileScreen()));
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProfileScreen(),
+                      ),
+                    );
                   }
                 }
                 debugPrint("this is the value $val!");
@@ -115,9 +117,9 @@ class _ScanQrState extends State<ScanQr> {
                       create: (context) =>
                           ResultCubit()..getUserData(User.m!['UID']),
                       child: ResultScreen(
-                        // code: val.toString(),
-                        // closeScreen: closeScreen,
-                        isScaned: true,
+                        code: val.toString(),
+                        closeScreen: closeScreen,
+                        // isScaned: true,
                       ),
                     ),
                   ),

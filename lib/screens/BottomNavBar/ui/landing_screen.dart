@@ -9,6 +9,7 @@ import 'package:firebase/screens/QR%20Code%20+%20ID/Profile_screen.dart';
 import 'package:firebase/screens/QR%20Code%20+%20ID/logic/result_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'dart:developer';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
@@ -20,6 +21,7 @@ class LandingPage extends StatefulWidget {
 class _LandingPageState extends State<LandingPage> {
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Campus Compass'),

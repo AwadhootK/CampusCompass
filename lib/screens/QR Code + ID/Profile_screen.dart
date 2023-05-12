@@ -1,7 +1,11 @@
+import 'dart:developer';
+
 import 'package:firebase/helpers/global_data.dart';
+import 'package:firebase/screens/QR%20Code%20+%20ID/logic/result_cubit.dart';
 import 'package:firebase/screens/QR%20Code%20+%20ID/ui/result_screen.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProfileScreen extends StatefulWidget {
   ProfileScreen({super.key});
@@ -15,22 +19,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    setState(() {});
+    log('USER DATA: ');
+    log(User.m!['UID'].toString());
+
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(
-              height: 10,
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            FlipWidget(),
-          ],
-        ),
+      body: BlocConsumer<ResultCubit, ResultState>(
+        listener: (context, state) {},
+        builder: (context, state) {
+          if (state is ResultLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is ResultLoaded) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  FlipWidget(
+                    code: User.m!['UID'],
+                  ),
+                ],
+              ),
+            );
+          } else if (state is ResultError) {
+            return Center(child: Text(state.message));
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
       ),
     );
   }
