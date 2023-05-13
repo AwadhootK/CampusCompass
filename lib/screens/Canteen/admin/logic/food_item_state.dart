@@ -19,3 +19,4 @@ class FoodItemsFetchedState extends FoodItemState {
 }
 
 class RefetchDataState extends FoodItemState {}
+

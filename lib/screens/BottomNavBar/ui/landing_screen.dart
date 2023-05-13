@@ -5,6 +5,7 @@ import 'package:firebase/screens/BottomNavBar/logic/bottomnavbar_cubit.dart';
 import 'package:firebase/screens/Canteen/admin/admin_main.dart';
 import 'package:firebase/screens/Canteen/admin/admin_signup.dart';
 import 'package:firebase/screens/Canteen/admin/logic/admin_cubit.dart';
+import 'package:firebase/screens/Canteen/admin/logic/daily_item_cubit.dart';
 import 'package:firebase/screens/Canteen/admin/logic/food_item_cubit.dart';
 import 'package:firebase/screens/Canteen/canteen_menu.dart';
 import 'package:firebase/screens/Clubs/logic/clubs_cubit.dart';
@@ -101,8 +102,15 @@ class _LandingPageState extends State<LandingPage> {
               ),
             );
           } else if (state is BottomNavCanteen) {
-            return BlocProvider(
-              create: (context) => FoodItemCubit()..fetchFoodItems(),
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (context) => FoodItemCubit()..fetchFoodItems(),
+                ),
+                BlocProvider(
+                  create: (context) => DailyItemCubit()..getDailyMenu(),
+                ),
+              ],
               child: CanteenMenu(),
             );
           } else {

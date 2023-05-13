@@ -1,10 +1,12 @@
-import 'dart:developer';
+import 'dart:convert';
 
 import 'package:firebase/screens/Canteen/admin/add_update_form.dart';
 import 'package:firebase/screens/Canteen/admin/logic/admin_cubit.dart';
+import 'package:firebase/screens/Canteen/admin/logic/daily_item_cubit.dart';
 import 'package:firebase/screens/Canteen/admin/logic/food_item_cubit.dart';
 import 'package:firebase/screens/Canteen/admin/widgets/admin_food_card.dart';
 import 'package:firebase/screens/Canteen/admin/widgets/meal_image_picker.dart';
+import 'package:firebase/screens/Canteen/daily_meals.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -101,7 +103,49 @@ class AdminHome extends StatelessWidget {
                       ),
                     ],
                   ),
-                  ImageInput(),
+                  RefreshIndicator(
+                    onRefresh: () => Future.delayed(
+                      const Duration(seconds: 1),
+                      () => BlocProvider.of<DailyItemCubit>(context)
+                          .getDailyMenu(),
+                    ),
+                    child: BlocConsumer<DailyItemCubit, DailyItemState>(
+                      listener: (context, state) {},
+                      builder: (context, state) {
+                        if (state is DailyItemErrorState) {
+                          return Center(
+                            child: Text(state.error),
+                          );
+                        } else if (state is DailyMenuLoadedState) {
+                          return Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Image.memory(
+                                  base64Decode(state.img),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => ImageInput(),
+                                    ),
+                                  );
+                                },
+                                child: const Text('Upload New Menu'),
+                              ),
+                            ],
+                          );
+                        } else {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                      },
+                    ),
+                  )
                 ],
               ),
             ),

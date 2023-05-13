@@ -68,63 +68,65 @@ class _ImageInputState extends State<ImageInput> {
 
     CollectionReference collectionReference =
         FirebaseFirestore.instance.collection('meals');
-    await collectionReference.doc(DateTime.now().toString()).set({
+    await collectionReference.doc('Weekly meal').update({
       'image': base64Encode(_image!.readAsBytesSync()),
     });
 
     setState(() {
       isUploading = false;
-      _image = null;
+      Navigator.pop(context);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return isUploading
-        ? const Center(child: CircularProgressIndicator())
-        : Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              AnimatedContainer(
-                padding: const EdgeInsets.all(20),
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.easeInOut,
-                height: 500,
-                width: 250,
-                child: _image == null
-                    ? const Center(
-                        child: Text('No Image Selected'),
-                      )
-                    : Image.file(
-                        _image!,
-                        fit: BoxFit.cover,
-                      ),
-              ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedButton.icon(
-                    onPressed: () => _getImage(ImageSource.camera),
-                    icon: const Icon(Icons.camera_alt),
-                    label: const Text('Camera'),
-                  ),
-                  ElevatedButton.icon(
-                    onPressed: () => _getImage(ImageSource.gallery),
-                    icon: const Icon(Icons.photo_library),
-                    label: const Text('Gallery'),
-                  ),
-                ],
-              ),
-              const Spacer(),
-              Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: FloatingActionButton(
-                  onPressed: _uploadImage,
-                  child: const Icon(Icons.upload),
+    return Scaffold(
+      body: isUploading
+          ? const Center(child: CircularProgressIndicator())
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                AnimatedContainer(
+                  padding: const EdgeInsets.all(20),
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.easeInOut,
+                  height: 500,
+                  width: 250,
+                  child: _image == null
+                      ? const Center(
+                          child: Text('No Image Selected'),
+                        )
+                      : Image.file(
+                          _image!,
+                          fit: BoxFit.cover,
+                        ),
                 ),
-              ),
-            ],
-          );
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: () => _getImage(ImageSource.camera),
+                      icon: const Icon(Icons.camera_alt),
+                      label: const Text('Camera'),
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: () => _getImage(ImageSource.gallery),
+                      icon: const Icon(Icons.photo_library),
+                      label: const Text('Gallery'),
+                    ),
+                  ],
+                ),
+                const Spacer(),
+                Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: FloatingActionButton(
+                    onPressed: _uploadImage,
+                    child: const Icon(Icons.upload),
+                  ),
+                ),
+              ],
+            ),
+    );
   }
 }

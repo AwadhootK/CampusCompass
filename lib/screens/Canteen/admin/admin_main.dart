@@ -3,6 +3,7 @@ import 'package:firebase/screens/BottomNavBar/ui/landing_screen.dart';
 import 'package:firebase/screens/Canteen/admin/admin_signup.dart';
 import 'package:firebase/screens/Canteen/admin/logic/admin_cubit.dart';
 import 'package:firebase/screens/Canteen/admin/admin_home.dart';
+import 'package:firebase/screens/Canteen/admin/logic/daily_item_cubit.dart';
 import 'package:firebase/screens/Canteen/admin/logic/food_item_cubit.dart';
 import 'package:firebase/screens/Clubs/logic/clubs_cubit.dart';
 import 'package:flutter/material.dart';
@@ -39,8 +40,15 @@ class AdminMain extends StatelessWidget {
         if (state is AdminAuthInitialState) {
           return AdminLoginSignup();
         } else if (state is AdminAuthSuccessState) {
-          return BlocProvider(
-            create: (context) => FoodItemCubit()..fetchFoodItems(),
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (context) => FoodItemCubit()..fetchFoodItems(),
+              ),
+              BlocProvider(
+                create: (context) => DailyItemCubit()..getDailyMenu(),
+              ),
+            ],
             child: const AdminHome(),
           );
         } else if (state is AdminAuthErrorState) {

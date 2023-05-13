@@ -1,4 +1,10 @@
+import 'dart:convert';
+import 'dart:developer';
+import 'package:firebase/helpers/global_data.dart';
+import 'package:firebase/screens/Canteen/admin/logic/cart_cubit.dart';
+import 'package:firebase/screens/Canteen/admin/logic/daily_item_cubit.dart';
 import 'package:firebase/screens/Canteen/admin/widgets/food_card.dart';
+import 'package:firebase/screens/Canteen/cart_page.dart';
 import 'package:flutter/material.dart';
 import './admin/logic/food_item_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,11 +44,41 @@ class CanteenMenu extends StatelessWidget {
                         child: CircularProgressIndicator(),
                       );
                     } else if (state is FoodItemsFetchedState) {
-                      return ListView.builder(
-                        itemCount: state.items.length,
-                        itemBuilder: (context, index) => FoodItemWidget(
-                          foodItem: state.items[index],
-                        ),
+                      return Stack(
+                        children: [
+                          ListView.builder(
+                            itemCount: state.items.length,
+                            itemBuilder: (context, index) => BlocProvider(
+                              create: (context) => CartCubit(),
+                              child: FoodItemWidget(
+                                foodItem: state.items[index],
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 10,
+                            right: 10,
+                            child: FloatingActionButton(
+                              onPressed: () {
+                                log('Cart button pressed');
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        BlocProvider<CartCubit>(
+                                      create: (context) => CartCubit()
+                                        ..getCartItems(
+                                          User.m!['UID'],
+                                          state.items,
+                                        ),
+                                      child: CartPage(),
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: const Icon(Icons.shopping_cart),
+                            ),
+                          ),
+                        ],
                       );
                     } else if (state is FoodItemErrorState) {
                       return Center(
@@ -55,11 +91,43 @@ class CanteenMenu extends StatelessWidget {
                     }
                   },
                 ),
-                Container(
-                  child: Center(
-                    child: Text('Tab 2 content'),
+                RefreshIndicator(
+                  onRefresh: () => Future.delayed(
+                    const Duration(seconds: 1),
+                    () =>
+                        BlocProvider.of<DailyItemCubit>(context).getDailyMenu(),
                   ),
-                ),
+                  child: BlocConsumer<DailyItemCubit, DailyItemState>(
+                    listener: (context, state) {},
+                    builder: (context, state) {
+                      if (state is DailyItemErrorState) {
+                        return Center(
+                          child: Text(state.error),
+                        );
+                      } else if (state is DailyMenuLoadedState) {
+                        return Column(
+                          children: [
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            const Text('Weekly Meals Menu'),
+                            Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Image.memory(
+                                base64Decode(state.img),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ],
+                        );
+                      } else {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                    },
+                  ),
+                )
               ],
             ),
           ),

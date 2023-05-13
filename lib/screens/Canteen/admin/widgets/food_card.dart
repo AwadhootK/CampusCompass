@@ -1,6 +1,9 @@
 import 'dart:convert';
 
+import 'package:firebase/helpers/global_data.dart';
+import 'package:firebase/screens/Canteen/admin/logic/cart_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/food_item_model.dart';
 
 class FoodItemWidget extends StatelessWidget {
@@ -78,12 +81,43 @@ class FoodItemWidget extends StatelessWidget {
             ),
             IconButton(
               onPressed: foodItem.availability!
-                  ? () {
+                  ? () async {
                       // Handle adding to cart
+                      final sc = ScaffoldMessenger.of(context);
+                      await BlocProvider.of<CartCubit>(context).addtoCart(
+                          foodItem.name!.toLowerCase(), User.m!['UID']);
+                      sc
+                        ..hideCurrentSnackBar
+                        ..showSnackBar(
+                          SnackBar(
+                            backgroundColor: Colors.green,
+                            content: const Text('Added to cart'),
+                            duration: const Duration(seconds: 1),
+                            action: SnackBarAction(
+                              label: 'Undo',
+                              textColor: Colors.white,
+                              onPressed: () async {
+                                await BlocProvider.of<CartCubit>(context)
+                                    .removeFromCart(
+                                        foodItem.name!.toLowerCase(),
+                                        User.m!['UID']);
+                                sc
+                                  ..hideCurrentSnackBar()
+                                  ..showSnackBar(
+                                    const SnackBar(
+                                      backgroundColor: Colors.red,
+                                      content: Text('Removed from cart'),
+                                      duration: Duration(seconds: 1),
+                                    ),
+                                  );
+                              },
+                            ),
+                          ),
+                        );
                     }
                   : null,
               icon: Icon(
-                Icons.shopping_cart,
+                Icons.add_circle_outline,
                 color: foodItem.availability!
                     ? Colors.green[700]
                     : Colors.grey[700],
