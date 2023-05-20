@@ -6,6 +6,7 @@ import 'package:firebase/screens/Canteen/admin/admin_home.dart';
 import 'package:firebase/screens/Canteen/admin/logic/daily_item_cubit.dart';
 import 'package:firebase/screens/Canteen/admin/logic/food_item_cubit.dart';
 import 'package:firebase/screens/Clubs/logic/clubs_cubit.dart';
+import 'package:firebase/screens/Login/login_signup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -54,17 +55,7 @@ class AdminMain extends StatelessWidget {
         } else if (state is AdminAuthErrorState) {
           return AdminLoginSignup();
         } else if (state is AdminAuthLogoutState) {
-          return MultiBlocProvider(
-            providers: [
-              BlocProvider(
-                create: (context) => ClubsCubit(),
-              ),
-              BlocProvider(
-                create: (context) => BottomNavBarCubit()..changeIndex(4),
-              ),
-            ],
-            child: LandingPage(),
-          );
+          return LoginSignup();
         } else {
           return const Center(
             child: CircularProgressIndicator(),

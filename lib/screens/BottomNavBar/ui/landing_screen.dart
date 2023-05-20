@@ -1,10 +1,8 @@
 import 'dart:developer';
 
 import 'package:firebase/helpers/global_data.dart';
+import 'package:firebase/screens/Attendance/widgets/subject_card.dart';
 import 'package:firebase/screens/BottomNavBar/logic/bottomnavbar_cubit.dart';
-import 'package:firebase/screens/Canteen/admin/admin_main.dart';
-import 'package:firebase/screens/Canteen/admin/admin_signup.dart';
-import 'package:firebase/screens/Canteen/admin/logic/admin_cubit.dart';
 import 'package:firebase/screens/Canteen/admin/logic/daily_item_cubit.dart';
 import 'package:firebase/screens/Canteen/admin/logic/food_item_cubit.dart';
 import 'package:firebase/screens/Canteen/canteen_menu.dart';
@@ -15,7 +13,6 @@ import 'package:firebase/screens/QR%20Code%20+%20ID/Profile_screen.dart';
 import 'package:firebase/screens/QR%20Code%20+%20ID/logic/result_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'dart:developer';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
@@ -28,6 +25,7 @@ class _LandingPageState extends State<LandingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(50),
         child: BlocBuilder<BottomNavBarCubit, BottomNavBarState>(
@@ -47,21 +45,6 @@ class _LandingPageState extends State<LandingPage> {
             } else if (state is BottomNavCanteen) {
               return AppBar(
                 title: const Text('Canteen'),
-                actions: [
-                  IconButton(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => BlocProvider(
-                            create: (context) => AdminAuthCubit(),
-                            child: AdminMain(),
-                          ),
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.edit),
-                  ),
-                ],
               );
             } else {
               return AppBar(
@@ -96,10 +79,7 @@ class _LandingPageState extends State<LandingPage> {
             );
           } else if (state is BottomNavAttendance) {
             return Center(
-              child: Container(
-                color: Colors.green,
-                child: const Text('Attendance'),
-              ),
+              child: MyAttendance(),
             );
           } else if (state is BottomNavCanteen) {
             return MultiBlocProvider(

@@ -33,6 +33,7 @@ class myApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: BlocConsumer<AuthCubit, LoginState>(
           listener: (context, state) {},
           builder: (context, state) {

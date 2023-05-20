@@ -1,16 +1,8 @@
-import 'dart:developer';
-
-import 'package:firebase/screens/Canteen/admin/admin_main.dart';
 import 'package:firebase/screens/Canteen/admin/logic/admin_cubit.dart';
-import 'package:firebase/screens/Login/logic/login_cubit.dart';
-import 'package:firebase/screens/QR%20Code%20+%20ID/Qr_Scan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../helpers/myException.dart';
-import '../../Login/sign_up.dart';
-
-enum formState { login, signUp }
 
 class AdminLoginSignup extends StatefulWidget {
   AdminLoginSignup({super.key});
@@ -21,7 +13,6 @@ class AdminLoginSignup extends StatefulWidget {
 
 class _LoginSignupState extends State<AdminLoginSignup> {
   final _key = GlobalKey<FormState>();
-  final Map<String, String> _user = {'username': '', 'password': ''};
   final passwordController = TextEditingController();
 
   @override
@@ -30,7 +21,6 @@ class _LoginSignupState extends State<AdminLoginSignup> {
     super.dispose();
   }
 
-  formState state = formState.login;
   var _isLoading = false;
 
   void _showErrorDialog(String errorMsg) {
@@ -49,23 +39,13 @@ class _LoginSignupState extends State<AdminLoginSignup> {
     );
   }
 
-  Future<void> _saveForm() async {
-
+  Future<void> _saveForm(String code) async {
     final isValid = _key.currentState!.validate();
     if (!isValid) return;
     _key.currentState!.save();
     try {
-      if (state == formState.login) {
-        await BlocProvider.of<AdminAuthCubit>(context).loginAdmin(
-          _user['username']!,
-          _user['password']!,
-        );
-      } else if (state == formState.signUp) {
-        await BlocProvider.of<AdminAuthCubit>(context).signupAdmin(
-          _user['username']!,
-          _user['password']!,
-        );
-      }
+      await BlocProvider.of<AdminAuthCubit>(context).authenticateAdmin(code);
+      Navigator.of(context).pop();
     } on httpException catch (error) {
       setState(() {
         _isLoading = false;
@@ -93,18 +73,6 @@ class _LoginSignupState extends State<AdminLoginSignup> {
     }
   }
 
-  void _toggleFormState() {
-    if (state == formState.login) {
-      setState(() {
-        state = formState.signUp;
-      });
-    } else if (state == formState.signUp) {
-      setState(() {
-        state = formState.login;
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -125,7 +93,6 @@ class _LoginSignupState extends State<AdminLoginSignup> {
                     ),
                     duration: const Duration(milliseconds: 500),
                     curve: Curves.easeInOut,
-                    height: state == formState.login ? 350 : 400,
                     width: 300,
                     child: Card(
                       shape: RoundedRectangleBorder(
@@ -139,95 +106,20 @@ class _LoginSignupState extends State<AdminLoginSignup> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               TextFormField(
-                                decoration: const InputDecoration(
-                                    label: Text('Enter Username')),
-                                textInputAction: TextInputAction.next,
-                                keyboardType: TextInputType.name,
-                                validator: (value) {
-                                  if (value == null) return 'Value is a null';
-                                  if (value.isEmpty) {
-                                    return 'Please provide a value';
-                                  }
-                                  return null;
-                                },
-                                onSaved: (newValue) {
-                                  _user['username'] =
-                                      '${newValue!.toUpperCase()}@pict.edu';
-                                },
-                              ),
-                              TextFormField(
-                                decoration: const InputDecoration(
-                                    label: Text('Enter Password')),
-                                obscureText: true,
-                                controller: passwordController,
-                                textInputAction: state == formState.login
-                                    ? TextInputAction.done
-                                    : TextInputAction.next,
-                                validator: (value) {
-                                  if (value == null) return 'Value is null';
-                                  if (value.isEmpty) {
-                                    return 'Please provide a value';
-                                  }
-                                  return null;
-                                },
-                                onSaved: (newValue) {
-                                  _user['password'] = newValue!;
-                                },
-                                onFieldSubmitted: (_) =>
-                                    state == formState.login
-                                        ? _saveForm()
-                                        : null,
-                              ),
-                              if (state == formState.signUp)
-                                TextFormField(
                                   decoration: const InputDecoration(
-                                      label: Text('Confirm Password')),
+                                      label: Text('Enter Admin Code')),
                                   obscureText: true,
+                                  controller: passwordController,
                                   textInputAction: TextInputAction.done,
                                   validator: (value) {
                                     if (value == null) return 'Value is null';
                                     if (value.isEmpty) {
-                                      return 'Please Re-Enter Password!';
-                                    }
-                                    if (value != passwordController.text) {
-                                      return 'Passwords do not match!';
+                                      return 'Please provide a value';
                                     }
                                     return null;
                                   },
-                                  onFieldSubmitted: (_) => _saveForm(),
-                                ),
-                              const SizedBox(
-                                height: 30,
-                              ),
-                              // if (state == formState.signUp) SignUp(),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Card(
-                                    child: TextButton(
-                                        onPressed: state == formState.login
-                                            ? _saveForm
-                                            : _toggleFormState,
-                                        child: const Text(
-                                          'Login',
-                                          style: TextStyle(color: Colors.green),
-                                        )),
-                                  ),
-                                  Card(
-                                    child: TextButton(
-                                        onPressed: state == formState.signUp
-                                            ? _saveForm
-                                            : _toggleFormState,
-                                        // onPressed: () => Navigator.of(context)
-                                        //     .pushNamed(SignUp.routeName),
-                                        child: const Text(
-                                          'Sign Up',
-                                          style: TextStyle(color: Colors.green),
-                                        )),
-                                  ),
-                                ],
-                              ),
+                                  onFieldSubmitted: (_) =>
+                                      _saveForm(passwordController.text)),
                             ],
                           ),
                         ),

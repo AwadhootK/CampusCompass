@@ -1,3 +1,5 @@
+import 'package:firebase/screens/Canteen/admin/admin_main.dart';
+import 'package:firebase/screens/Canteen/admin/logic/admin_cubit.dart';
 import 'package:firebase/screens/Login/logic/login_cubit.dart';
 import 'package:firebase/screens/QR%20Code%20+%20ID/Qr_Scan.dart';
 import 'package:flutter/material.dart';
@@ -229,21 +231,45 @@ class _LoginSignupState extends State<LoginSignup> {
                   height: 30,
                 ),
                 Center(
-                  child: Card(
-                    color: Colors.blue,
-                    child: TextButton(
-                      onPressed: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => ScanQr(isLogin: false),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Card(
+                        color: Colors.blue,
+                        child: TextButton(
+                          onPressed: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => ScanQr(isLogin: false),
+                            ),
+                          ),
+                          child: const Text(
+                            'Verify QR Code',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                       ),
-                      child: const Text(
-                        'Verify QR Code',
-                        style: TextStyle(
-                          color: Colors.white,
+                      Card(
+                        color: Colors.blue,
+                        child: TextButton(
+                          onPressed: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => BlocProvider(
+                                create: (context) => AdminAuthCubit(),
+                                child: AdminMain(),
+                              ),
+                            ),
+                          ),
+                          child: const Text(
+                            'Sign In as Admin',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
               ],
