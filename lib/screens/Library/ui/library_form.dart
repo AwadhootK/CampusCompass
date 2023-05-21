@@ -24,6 +24,7 @@ class _LibraryFormState extends State<LibraryForm> {
   TextEditingController datecontrol = TextEditingController();
   TextEditingController datecontrol_return = TextEditingController();
   TextEditingController time_control = TextEditingController();
+  TextEditingController date_control = TextEditingController();
   // late LibraryDetails currentBook;
   Map<String, String> library = {
     'bookName': '',
@@ -31,6 +32,8 @@ class _LibraryFormState extends State<LibraryForm> {
     'returnDate': '',
   };
   late TimeOfDay selectedTime;
+  late DateTime selectedDay;
+  late DateTime returnDate;
   CollectionReference cr2 = FirebaseFirestore.instance.collection('library');
   List<Map<String, LibraryDetails>> m = [];
 
@@ -38,15 +41,18 @@ class _LibraryFormState extends State<LibraryForm> {
     final isValid = formKey.currentState!.validate();
     if (!isValid) return;
     formKey.currentState!.save();
-    widget.addBook(library, timeOfDayToISOString(selectedTime));
+    widget.addBook(
+      library,
+      timeOfDayToISOString(returnDate, selectedTime),
+    );
   }
 
-  String timeOfDayToISOString(TimeOfDay timeOfDay) {
-    final now = DateTime.now();
-    final dateTime = DateTime(
-        now.year, now.month, now.day, timeOfDay.hour, timeOfDay.minute);
+  String timeOfDayToISOString(DateTime selectedDay, TimeOfDay timeOfDay) {
+    // final now = DateTime.now();
+    final dateTime = DateTime(selectedDay.year, selectedDay.month,
+        selectedDay.day, timeOfDay.hour, timeOfDay.minute);
     final formattedString = DateFormat('HH:mm:ss').format(dateTime);
-    return '${library['returnDate']!.substring(0, 10)} $formattedString';
+    return '${selectedDay.toIso8601String().substring(0, 10)} $formattedString';
   }
 
   @override
@@ -107,20 +113,18 @@ class _LibraryFormState extends State<LibraryForm> {
                     child: const Text("Return Date"),
                     onPressed: () async {
                       DateTime? pickedDate = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(
-                              2000), //DateTime.now() - not to allow to choose before today.
-                          lastDate: DateTime(2101));
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2101),
+                      );
 
                       if (pickedDate != null) {
-                        log(pickedDate
-                            .toIso8601String()); //pickedDate output format => 2021-03-10 00:00:00.000
+                        log(pickedDate.toIso8601String());
                         String formattedDate = pickedDate.toIso8601String();
-                        print(
-                            formattedDate); //formatted date output using intl package =>  2021-03-16
-                        //you can implement different kind of Date Format here according to your requirement
+                        print(formattedDate);
 
+                        returnDate = pickedDate;
                         setState(() {
                           datecontrol_return.text = formattedDate;
                           library['returnDate'] = datecontrol_return.text;
@@ -129,31 +133,49 @@ class _LibraryFormState extends State<LibraryForm> {
                     },
                   ),
                   TextButton(
-                      onPressed: () async {
-                        TimeOfDay? pickedTime = await showTimePicker(
+                    onPressed: () async {
+                      DateTime? pickedDay = await showDatePicker(
                           context: context,
-                          initialTime: TimeOfDay.now(),
-                        );
-                        if (pickedTime != null) {
-                          log(pickedTime
-                              .toString()); //pickedDate output format => 2021-03-10 00:00:00.000
-                          String formattedTime = pickedTime.toString();
-                          log(formattedTime); //formatted date output using intl package =>  2021-03-16
-                          //you can implement different kind of Date Format here according to your requirement
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(
+                            2000,
+                          ),
+                          lastDate: DateTime(2101));
 
-                          selectedTime = pickedTime;
-                          setState(() {
-                            time_control.text = formattedTime;
-                            library['time_control'] = time_control.text;
-                          });
-                        }
-                      },
-                      child: const Text("Choose Time for Reminder")),
+                      if (pickedDay != null) {
+                        log(pickedDay
+                            .toString()); 
+                        String formattedTime = pickedDay.toIso8601String();
+                        log(formattedTime);
 
-                  //show time picker and read time to push notification
-
-                  // Schedule notification for May 19, 2023, at 10:00 AM
-
+                        selectedDay = pickedDay;
+                        setState(() {
+                          date_control.text = formattedTime;
+                          library['date_control'] = date_control.text;
+                        });
+                      }
+                    },
+                    child: const Text("Choose Date for Reminder"),
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      TimeOfDay? pickedTime = await showTimePicker(
+                        context: context,
+                        initialTime: TimeOfDay.now(),
+                      );
+                      if (pickedTime != null) {
+                        log(pickedTime.toString());
+                        String formattedTime = pickedTime.toString();
+                        log(formattedTime);
+                        selectedTime = pickedTime;
+                        setState(() {
+                          time_control.text = formattedTime;
+                          library['time_control'] = time_control.text;
+                        });
+                      }
+                    },
+                    child: const Text("Choose Time for Reminder"),
+                  ),
                   ElevatedButton(
                     onPressed: () {
                       // log(timeOfDayToISOString(selectedTime));
@@ -172,8 +194,8 @@ class _LibraryFormState extends State<LibraryForm> {
                       _notificationScheduler.scheduleNotification(
                         'Book Return Reminder!',
                         'Your book ${library['bookName']} is due for return on $returnDate',
-                        DateFormat('yyyy-MM-dd HH:mm:ss')
-                            .parse(timeOfDayToISOString(selectedTime)),
+                        DateFormat('yyyy-MM-dd HH:mm:ss').parse(
+                            timeOfDayToISOString(selectedDay, selectedTime)),
                       );
                       Navigator.pop(context);
                     },

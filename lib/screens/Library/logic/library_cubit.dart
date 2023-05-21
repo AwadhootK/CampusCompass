@@ -47,12 +47,11 @@ class LibraryBloc extends Cubit<Library> {
           .doc(library['bookName'])
           .set(library);
 
-      log(date);
+      log('Deletion date is: $date');
 
       //set timer to delete the book
       setDeleteTime(
         library['bookName']!,
-        deleteBook,
         DateTime.parse(date),
       );
 
@@ -80,8 +79,7 @@ class LibraryBloc extends Cubit<Library> {
     }
   }
 
-  void setDeleteTime(
-      String bookName, Function deleteBook, DateTime returnDate) {
+  void setDeleteTime(String bookName, DateTime returnDate) {
     log('setting the timer');
     log(DateTime.now().toString());
     log(returnDate.toString());
@@ -94,6 +92,5 @@ class LibraryBloc extends Cubit<Library> {
     Timer(difference, () {
       deleteBook(bookName);
     });
-
   }
 }

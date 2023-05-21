@@ -20,7 +20,7 @@ import 'screens/Clubs/ui/club_posts.dart';
 void main() async {
   // Initialize the firestore database
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   await Firebase.initializeApp();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -44,18 +44,20 @@ class myApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         home: BlocConsumer<AuthCubit, LoginState>(
           listener: (context, state) {
-            if (state is LoginError) {
+            if (state is LoginError || state is LoginErrorState) {
               ScaffoldMessenger.of(context)
                 ..hideCurrentSnackBar()
                 ..showSnackBar(
-                  SnackBar(
+                  const SnackBar(
                     backgroundColor: Colors.red,
-                    content: Text(state.error.toString()),
-                    duration: const Duration(seconds: 3),
+                    content: Text('Something went wrong! Try again.'),
+                    duration: Duration(seconds: 3),
                   ),
                 );
             }
           },
+          buildWhen: (previous, current) =>
+              current is! LoginErrorState || current is! LoginError,
           builder: (context, state) {
             log('State is: ${state.toString()}');
             if (state is LoginSuccessState ||
@@ -95,7 +97,8 @@ class myApp extends StatelessWidget {
                     );
                   } else if (state is TryLoginFailedState ||
                       state is TryLoginError ||
-                      state is LoginError) {
+                      state is LoginError ||
+                      state is LoginErrorState) {
                     return LoginSignup();
                   } else if (state is SignUpSuccessful) {
                     return SignUp(uid: state.uid);
@@ -108,10 +111,10 @@ class myApp extends StatelessWidget {
                     ScaffoldMessenger.of(context)
                       ..hideCurrentSnackBar()
                       ..showSnackBar(
-                        SnackBar(
+                        const SnackBar(
                           backgroundColor: Colors.red,
-                          content: Text(state.error.toString()),
-                          duration: const Duration(seconds: 3),
+                          content: Text('Something went wrong! Try again.'),
+                          duration: Duration(seconds: 3),
                         ),
                       );
                   }
@@ -119,6 +122,7 @@ class myApp extends StatelessWidget {
               );
             } else if (state is LogOutState ||
                 state is LoginError ||
+                state is LoginErrorState ||
                 state is TryLoginFailedState) {
               return LoginSignup();
             } else if (state is TryLoginError) {

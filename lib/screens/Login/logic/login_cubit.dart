@@ -93,6 +93,7 @@ class AuthCubit extends Cubit<LoginState> {
       User.m =
           null; // to prevent storing the user's data unnecessarily if authentication failed
       emit(LoginError(error.toString()));
+      rethrow;
     }
   }
 
@@ -110,8 +111,13 @@ class AuthCubit extends Cubit<LoginState> {
   }
 
   Future<void> signup(String username, String password) async {
+    try {
+
     await _authenticate(username, password, 'signUp');
     emit(SignUpSuccessful(username));
+    } catch(e) {
+      emit(LoginErrorState(e.toString()));
+    }
   }
 
   Future<void> login(String username, String password) async {
@@ -181,6 +187,8 @@ class AuthCubit extends Cubit<LoginState> {
         const Duration(seconds: 3),
       ); // just to show the splash screen for 3 sec
 
+      log('tryAutoLogin SUCCESS');
+
       _userID = extractedData['userID'];
       _token = extractedData['token'];
       _expiryTime = DateTime.parse(extractedData['expiryTime']);
@@ -194,6 +202,7 @@ class AuthCubit extends Cubit<LoginState> {
           .fetchClubID()
           .then((value) => log(User.clubs.toString()));
       autoLogOut();
+
       emit(TryLoginSuccessState());
     } catch (error) {
       log('tryAutoLogin');
