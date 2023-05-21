@@ -68,7 +68,9 @@ class AuthCubit extends Cubit<LoginState> {
       _expiryTime = DateTime.now()
           .add(Duration(seconds: int.parse(extractedData['expiresIn'])));
       autoLogOut();
-      emit(LoginSuccessState());
+      if (urlSegment == 'signUp') {
+        emit(LoginSuccessState());
+      }
       final prefs = await SharedPreferences.getInstance();
       prefs.setString(
           'userData',
@@ -109,17 +111,23 @@ class AuthCubit extends Cubit<LoginState> {
 
   Future<void> signup(String username, String password) async {
     await _authenticate(username, password, 'signUp');
-    emit(SignUpSuccessful());
+    emit(SignUpSuccessful(username));
   }
 
   Future<void> login(String username, String password) async {
-    await _authenticate(username, password, 'signInWithPassword');
-    // log('logged in');
-    User.m = await Firestore(path: 'users').fetchID(username.substring(0, 11));
-    // log(User.m.toString());
-    // log('done fetching user data');
-    await Firestore(path: 'clubs').fetchClubID();
-    log(User.clubs.toString());
+    _authenticate(username, password, 'signInWithPassword').then(
+      (_) async {
+        User.m =
+            await Firestore(path: 'users').fetchID(username.substring(0, 11));
+      },
+    ).then(
+      (_) async {
+        await Firestore(path: 'clubs').fetchClubID();
+      },
+    ).then((_) {
+      emit(LoginSuccessState());
+      return;
+    });
   }
 
   Future<void> logout() async {

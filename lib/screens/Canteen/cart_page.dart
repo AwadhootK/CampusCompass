@@ -24,11 +24,14 @@ class CartPage extends StatelessWidget {
               } else if (state is CartLoaded) {
                 return Column(
                   children: [
-                    Container(
+                    SizedBox(
                       height: 600,
                       child: state.items.isEmpty
                           ? const Center(
-                              child: Text('Cart is empty'),
+                              child: Text(
+                                'Your cart is empty',
+                                textAlign: TextAlign.center,
+                              ),
                             )
                           : ListView.builder(
                               itemCount: state.items.length,
@@ -39,12 +42,13 @@ class CartPage extends StatelessWidget {
                               ),
                             ),
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        BlocProvider.of<CartCubit>(context).payAndCheckOut();
-                      },
-                      child: const Text('Pay'),
-                    ),
+                    if (state.items.isNotEmpty)
+                      ElevatedButton(
+                        onPressed: () {
+                          BlocProvider.of<CartCubit>(context).payAndCheckOut();
+                        },
+                        child: const Text('Pay'),
+                      ),
                   ],
                 );
               } else if (state is CartErrorState) {

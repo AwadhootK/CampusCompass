@@ -31,7 +31,10 @@ class TryLoginError extends LoginState {
   TryLoginError(this.error);
 }
 
-class SignUpSuccessful extends LoginState {}
+class SignUpSuccessful extends LoginState {
+  String uid;
+  SignUpSuccessful(this.uid);
+}
 
 class UserDataPosted extends LoginState {
   final Map<String, String> userData;

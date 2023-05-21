@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:firebase/helpers/global_data.dart';
 import 'package:firebase/screens/Login/logic/login_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,6 +14,9 @@ enum Gender { male, female, other }
 
 class SignUp extends StatefulWidget {
   static const routeName = '/sign_up';
+  String uid;
+
+  SignUp({required this.uid});
 
   @override
   State<SignUp> createState() => _SignUpState();
@@ -147,15 +151,16 @@ class _SignUpState extends State<SignUp> {
                 ),
                 TextFormField(
                   // decoration: const InputDecoration(labelText: 'Reg.ID Number'),
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
+                    hintText: widget.uid.toUpperCase().substring(0, 11),
                     labelText: 'Reg. ID No.',
-                    border: OutlineInputBorder(
+                    border: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(
                         Radius.circular(10),
                       ),
                     ),
                     focusColor: Colors.blue,
-                    enabledBorder: OutlineInputBorder(
+                    enabledBorder: const OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.blue),
                         borderRadius: BorderRadius.all(Radius.circular(12))),
                   ),
@@ -172,6 +177,9 @@ class _SignUpState extends State<SignUp> {
                         value.length == 11 &&
                         value[2] == 'K')) {
                       return 'Please enter a valid Reg.ID number';
+                    }
+                    if (value != widget.uid.toUpperCase().substring(0, 11)) {
+                      return 'Reg. ID number does not match with your login ID';
                     }
                     return null;
                   },
@@ -205,7 +213,7 @@ class _SignUpState extends State<SignUp> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: selectedBranch == Branch.CE
                             ? Colors.green[300]
-                            : null,
+                            : Colors.blueGrey,
                       ),
                       child: const Text('CE'),
                     ),
@@ -219,7 +227,7 @@ class _SignUpState extends State<SignUp> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: selectedBranch == Branch.IT
                             ? Colors.blue[400]
-                            : null,
+                            : Colors.blueGrey,
                       ),
                       child: const Text('IT'),
                     ),
@@ -233,7 +241,7 @@ class _SignUpState extends State<SignUp> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: selectedBranch == Branch.ENTC
                             ? Colors.purple[300]
-                            : null,
+                            : Colors.blueGrey,
                       ),
                       child: const Text('ENTC'),
                     ),

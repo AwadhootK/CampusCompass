@@ -82,7 +82,11 @@ class _MyWidgetState extends State<ClubsForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("POSTS FORM")),
+      backgroundColor: Colors.blue[100],
+      appBar: AppBar(
+        title: const Text('Enter Event Details'),
+        centerTitle: true,
+      ),
       // backgroundColor: Colors.black,
       body: BlocConsumer<ClubsCubit, ClubStates>(
         listener: (context, state) {},
@@ -99,8 +103,18 @@ class _MyWidgetState extends State<ClubsForm> {
                     children: [
                       TextFormField(
                         decoration: const InputDecoration(
-                          label: Text("TITLE"),
-                          labelStyle: TextStyle(fontStyle: FontStyle.italic),
+                          labelText: 'Event Title',
+                          labelStyle: TextStyle(color: Colors.blue),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                          ),
+                          focusColor: Colors.blue,
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(12))),
                         ),
                         keyboardType: TextInputType.text,
                         validator: (value) {
@@ -111,11 +125,24 @@ class _MyWidgetState extends State<ClubsForm> {
                           map_1['title'] = value.toString();
                         },
                       ),
+                      const SizedBox(
+                        height: 20,
+                      ),
                       TextField(
                         controller: dateTime,
                         decoration: const InputDecoration(
-                          label: Text('Date of Event'),
-                          icon: Icon(Icons.calendar_month),
+                          labelText: 'Event Date',
+                          labelStyle: TextStyle(color: Colors.blue),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                          ),
+                          focusColor: Colors.blue,
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(12))),
                         ),
                         onTap: () async {
                           DateTime? _picked = await showDatePicker(
@@ -134,10 +161,23 @@ class _MyWidgetState extends State<ClubsForm> {
                           }
                         },
                       ),
+                      const SizedBox(
+                        height: 20,
+                      ),
                       TextFormField(
                         decoration: const InputDecoration(
-                          labelText: "DESCRIPTION",
-                          labelStyle: TextStyle(fontStyle: FontStyle.italic),
+                          labelText: 'Event Description',
+                          labelStyle: TextStyle(color: Colors.blue),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                          ),
+                          focusColor: Colors.blue,
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(12))),
                         ),
                         focusNode: descriptionFocusNode,
                         keyboardType: TextInputType.multiline,
@@ -154,35 +194,68 @@ class _MyWidgetState extends State<ClubsForm> {
                           map_1['description'] = value.toString();
                         },
                       ),
-                      const SizedBox(
-                        height: 20,
+                      const SizedBox(height: 15),
+                      const Divider(
+                        color: Colors.blue,
                       ),
                       const Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          "Enter an Image",
-                          style: TextStyle(fontStyle: FontStyle.italic),
+                          'Enter Your Image',
+                          style: TextStyle(fontSize: 16),
                         ),
                       ),
-                      const SizedBox(
-                        height: 20,
+                      const Divider(
+                        color: Colors.blue,
                       ),
+                      const SizedBox(height: 10),
                       Container(
-                        color: const Color.fromARGB(255, 152, 182, 207),
+                        color: Colors.blue[200],
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            IconButton(
-                                onPressed: _cameraImage,
-                                icon: const Icon(Icons.camera)),
-                            IconButton(
+                            TextButton(
+                              onPressed: _cameraImage,
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.camera,
+                                    color: Colors.blue.shade700,
+                                  ),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  const Text(
+                                    'Open Camera',
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              height: 48,
+                              width: 20,
+                              color: Colors.blue[100],
+                            ),
+                            TextButton(
                                 onPressed: _fileImage,
-                                icon: const Icon(Icons.file_copy)),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.file_copy,
+                                      color: Colors.blue.shade700,
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    const Text(
+                                      'Open Gallery',
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                  ],
+                                )),
                           ],
                         ),
-                      ),
-                      const SizedBox(
-                        height: 20,
                       ),
                       AnimatedContainer(
                         duration: const Duration(milliseconds: 500),
@@ -197,9 +270,8 @@ class _MyWidgetState extends State<ClubsForm> {
                         height: 20,
                       ),
                       const SizedBox(height: 20),
-                      IconButton(
-                        // ignore: sort_child_properties_last
-                        icon: const Icon(Icons.save),
+                      ElevatedButton(
+                        child: const Text('Submit'),
                         onPressed: () => _saveform(),
                       ),
                     ],

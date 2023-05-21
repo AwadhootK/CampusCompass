@@ -15,10 +15,15 @@ class CartCubit extends Cubit<CartState> {
     try {
       CollectionReference collectionReference =
           FirebaseFirestore.instance.collection('cart');
+      final List<FoodItem> items = [];
       final response = await collectionReference.doc(UID).get()
         ..data();
+      if (!response.exists) {
+        await collectionReference.doc(UID).set({'cartItems': []});
+        emit(CartLoaded(items));
+        return;
+      }
       log(response.toString());
-      final List<FoodItem> items = [];
       response['cartItems'].forEach((element) {
         items.add(FoodItem(
           name: element,

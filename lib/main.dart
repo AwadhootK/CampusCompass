@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:flutter/services.dart';
 
 import 'package:firebase/screens/BottomNavBar/logic/bottomnavbar_cubit.dart';
 import 'package:firebase/screens/BottomNavBar/ui/landing_screen.dart';
@@ -19,7 +20,12 @@ import 'screens/Clubs/ui/club_posts.dart';
 void main() async {
   // Initialize the firestore database
   WidgetsFlutterBinding.ensureInitialized();
+  
   await Firebase.initializeApp();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   runApp(myApp());
 }
 
@@ -52,7 +58,9 @@ class myApp extends StatelessWidget {
           },
           builder: (context, state) {
             log('State is: ${state.toString()}');
-            if (state is LoginSuccessState || state is UserDataPosted) {
+            if (state is LoginSuccessState ||
+                state is UserDataPosted ||
+                state is TryLoginSuccessState) {
               return MultiBlocProvider(
                 providers: [
                   BlocProvider(
@@ -65,7 +73,7 @@ class myApp extends StatelessWidget {
                 child: const LandingPage(),
               );
             } else if (state is SignUpSuccessful) {
-              return SignUp();
+              return SignUp(uid: state.uid);
             } else if (state is LoginFailedState) {
               return BlocConsumer<AuthCubit, LoginState>(
                 bloc: BlocProvider.of<AuthCubit>(context)..tryAutoLogin(),
@@ -89,6 +97,8 @@ class myApp extends StatelessWidget {
                       state is TryLoginError ||
                       state is LoginError) {
                     return LoginSignup();
+                  } else if (state is SignUpSuccessful) {
+                    return SignUp(uid: state.uid);
                   } else {
                     return const SplashScreen();
                   }
@@ -119,7 +129,7 @@ class myApp extends StatelessWidget {
           },
         ),
         routes: {
-          SignUp.routeName: (context) => SignUp(),
+          SignUp.routeName: (context) => SignUp(uid: ''),
           ClubEvent.routeName: (context) => ClubEvent(),
           ClubsScreen.routeName: (context) => ClubsScreen(),
           EventDescription.routeName: (context) => EventDescription(),

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase/screens/Clubs/logic/clubs_cubit.dart';
 import 'package:firebase/screens/Clubs/ui/club_posts.dart';
 import 'package:firebase/screens/Clubs/ui/event_description.dart';
@@ -5,6 +7,76 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../helpers/global_data.dart';
+
+class PostWidget extends StatelessWidget {
+  final String eventName;
+  final String imageUrl;
+
+  const PostWidget({
+    required this.eventName,
+    required this.imageUrl,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(12.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blue[200]!.withOpacity(0.3),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(12.0),
+              topRight: Radius.circular(12.0),
+            ),
+            child: Container(
+              height: 300,
+              child: FittedBox(
+                fit: BoxFit.fill,
+                child: Hero(
+                  tag: imageUrl,
+                  child: Image.memory(
+                    base64Decode(imageUrl),
+                    fit: BoxFit.cover,
+                    height: 200.0,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.all(12.0),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(12.0),
+                bottomRight: Radius.circular(12.0),
+              ),
+            ),
+            child: Text(
+              eventName,
+              style: const TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 class ClubEvent extends StatefulWidget {
   static const routeName = '/clubs_events';
@@ -19,8 +91,10 @@ class _ClubEventState extends State<ClubEvent> {
     String clubName = ModalRoute.of(context)!.settings.arguments as String;
     List<Map<String, String>> event = User.events[clubName]!.values.toList();
     return Scaffold(
+      backgroundColor: Colors.blue[100],
       appBar: AppBar(
         title: Text(clubName),
+        centerTitle: true,
       ),
       body: event.isEmpty
           ? const Center(child: Text('No Events'))
@@ -32,26 +106,26 @@ class _ClubEventState extends State<ClubEvent> {
                 } else if (state is ClubsErrorState) {
                   return Center(child: Text(state.error));
                 } else {
-                  return ListView.builder(
-                    itemBuilder: (context, index) => GestureDetector(
-                      onTap: () {
-                        //Navigate
-                        Navigator.of(context).pushNamed(
+                  return ListView(children: [
+                    ...event.map(
+                      (e) => GestureDetector(
+                        onTap: () {
+                          //Navigate
+                          Navigator.of(context).pushNamed(
                             EventDescription.routeName,
-                            arguments: event[index]);
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.all(10),
-                        height: 50,
-                        width: 50,
-                        color: Colors.blue[200],
-                        child: Center(
-                            child:
-                                Text(event[index]['title'] ?? 'Unnamed Event')),
+                            arguments: e,
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: PostWidget(
+                            eventName: e['title']!,
+                            imageUrl: e['poster']!,
+                          ),
+                        ),
                       ),
-                    ),
-                    itemCount: event.length,
-                  );
+                    )
+                  ]);
                 }
               },
             ),

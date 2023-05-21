@@ -8,6 +8,8 @@ import 'package:firebase/screens/Canteen/admin/logic/food_item_cubit.dart';
 import 'package:firebase/screens/Canteen/canteen_menu.dart';
 import 'package:firebase/screens/Clubs/logic/clubs_cubit.dart';
 import 'package:firebase/screens/Clubs/ui/clubs_screen.dart';
+import 'package:firebase/screens/Library/logic/library_cubit.dart';
+import 'package:firebase/screens/Library/ui/library_screen.dart';
 import 'package:firebase/screens/Login/logic/login_cubit.dart';
 import 'package:firebase/screens/QR%20Code%20+%20ID/Profile_screen.dart';
 import 'package:firebase/screens/QR%20Code%20+%20ID/logic/result_cubit.dart';
@@ -33,6 +35,7 @@ class _LandingPageState extends State<LandingPage> {
             if (state is BottomNavProfile) {
               return AppBar(
                 title: const Text('Profile'),
+                centerTitle: true,
                 actions: [
                   IconButton(
                     onPressed: () {
@@ -42,13 +45,30 @@ class _LandingPageState extends State<LandingPage> {
                   ),
                 ],
               );
+            } else if (state is BottomNavClubs) {
+              return AppBar(
+                title: const Text('Clubs'),
+                centerTitle: true,
+              );
+            } else if (state is BottomNavLibrary) {
+              return AppBar(
+                title: const Text('Library'),
+                centerTitle: true,
+              );
+            } else if (state is BottomNavAttendance) {
+              return AppBar(
+                title: const Text('Attendance'),
+                centerTitle: true,
+              );
             } else if (state is BottomNavCanteen) {
               return AppBar(
                 title: const Text('Canteen'),
+                centerTitle: true,
               );
             } else {
               return AppBar(
                 title: const Text('Campus Compass'),
+                centerTitle: true,
               );
             }
           },
@@ -72,9 +92,9 @@ class _LandingPageState extends State<LandingPage> {
             );
           } else if (state is BottomNavLibrary) {
             return Center(
-              child: Container(
-                color: Colors.blue,
-                child: const Text('Library'),
+              child: BlocProvider(
+                create: (context) => LibraryBloc(),
+                child: LibraryScreen(),
               ),
             );
           } else if (state is BottomNavAttendance) {
