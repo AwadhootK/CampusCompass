@@ -106,8 +106,33 @@ class _LoginSignupState extends State<AdminLoginSignup> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               TextFormField(
-                                  decoration: const InputDecoration(
-                                      label: Text('Enter Admin Code')),
+                                  cursorColor: Colors.green[900],
+                                  decoration: InputDecoration(
+                                    labelText: 'Enter Admin Code',
+                                    labelStyle:
+                                        TextStyle(color: Colors.green[900]),
+                                    border: const OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.green),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(10),
+                                      ),
+                                    ),
+                                    focusColor: Colors.green,
+                                    focusedBorder: const OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.green),
+                                    ),
+                                    enabledBorder: const OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.green),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(12),
+                                      ),
+                                    ),
+                                  ),
+                                  // decoration: const InputDecoration(
+                                  //     label: Text('Enter Admin Code')),
                                   obscureText: true,
                                   controller: passwordController,
                                   textInputAction: TextInputAction.done,

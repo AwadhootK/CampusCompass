@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase/screens/BottomNavBar/logic/bottomnavbar_cubit.dart';
 import 'package:firebase/screens/BottomNavBar/ui/landing_screen.dart';
 import 'package:firebase/screens/Clubs/logic/clubs_cubit.dart';
@@ -35,11 +37,22 @@ class myApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         home: BlocConsumer<AuthCubit, LoginState>(
-          listener: (context, state) {},
+          listener: (context, state) {
+            if (state is LoginError) {
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  SnackBar(
+                    backgroundColor: Colors.red,
+                    content: Text(state.error.toString()),
+                    duration: const Duration(seconds: 3),
+                  ),
+                );
+            }
+          },
           builder: (context, state) {
-            if (state is LoginSuccessState ||
-                state is SignUpSuccessful ||
-                state is UserDataPosted) {
+            log('State is: ${state.toString()}');
+            if (state is LoginSuccessState || state is UserDataPosted) {
               return MultiBlocProvider(
                 providers: [
                   BlocProvider(
@@ -51,12 +64,14 @@ class myApp extends StatelessWidget {
                 ],
                 child: const LandingPage(),
               );
+            } else if (state is SignUpSuccessful) {
+              return SignUp();
             } else if (state is LoginFailedState) {
               return BlocConsumer<AuthCubit, LoginState>(
                 bloc: BlocProvider.of<AuthCubit>(context)..tryAutoLogin(),
                 builder: (context, state) {
-                  if (state is LoginSuccessState ||
-                      state is SignUpSuccessful ||
+                  log('state2 is : ${state.toString()}');
+                  if (state is TryLoginSuccessState ||
                       state is UserDataPosted) {
                     return MultiBlocProvider(
                       providers: [
@@ -70,18 +85,34 @@ class myApp extends StatelessWidget {
                       ],
                       child: const LandingPage(),
                     );
-                  } else if (state is LoginFailedState) {
+                  } else if (state is TryLoginFailedState ||
+                      state is TryLoginError ||
+                      state is LoginError) {
                     return LoginSignup();
                   } else {
                     return const SplashScreen();
                   }
                 },
-                listener: (context, state) {},
+                listener: (context, state) {
+                  if (state is LoginError) {
+                    ScaffoldMessenger.of(context)
+                      ..hideCurrentSnackBar()
+                      ..showSnackBar(
+                        SnackBar(
+                          backgroundColor: Colors.red,
+                          content: Text(state.error.toString()),
+                          duration: const Duration(seconds: 3),
+                        ),
+                      );
+                  }
+                },
               );
-            } else if (state is LogOutState) {
+            } else if (state is LogOutState ||
+                state is LoginError ||
+                state is TryLoginFailedState) {
               return LoginSignup();
-            } else if (state is LoginError) {
-              return Center(child: Text(state.error.toString()));
+            } else if (state is TryLoginError) {
+              return LoginSignup();
             } else {
               return const SplashScreen();
             }

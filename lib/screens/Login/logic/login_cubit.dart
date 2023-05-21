@@ -98,7 +98,8 @@ class AuthCubit extends Cubit<LoginState> {
     emit(LoginLoadingState());
     try {
       CollectionReference cr1 = FirebaseFirestore.instance.collection('users');
-      cr1.doc(m['UID']).set(m);
+      await cr1.doc(m['UID']).set(m);
+      User.m = m;
       emit(UserDataPosted(m));
     } catch (error) {
       log('postUserDetails');
@@ -107,16 +108,18 @@ class AuthCubit extends Cubit<LoginState> {
   }
 
   Future<void> signup(String username, String password) async {
-    _authenticate(username, password, 'signUp');
+    await _authenticate(username, password, 'signUp');
     emit(SignUpSuccessful());
   }
 
   Future<void> login(String username, String password) async {
+    await _authenticate(username, password, 'signInWithPassword');
+    // log('logged in');
     User.m = await Firestore(path: 'users').fetchID(username.substring(0, 11));
     // log(User.m.toString());
+    // log('done fetching user data');
     await Firestore(path: 'clubs').fetchClubID();
     log(User.clubs.toString());
-    return _authenticate(username, password, 'signInWithPassword');
   }
 
   Future<void> logout() async {
@@ -144,14 +147,14 @@ class AuthCubit extends Cubit<LoginState> {
   }
 
   Future<void> tryAutoLogin() async {
-    emit(LoginLoadingState());
+    emit(TryLoginLoadingState());
 
     try {
       final prefs = await SharedPreferences.getInstance();
 
       // no preferences found -> login unsuccessful
       if (!prefs.containsKey('userData')) {
-        emit(LoginFailedState());
+        emit(TryLoginFailedState());
         return;
       }
 
@@ -161,7 +164,7 @@ class AuthCubit extends Cubit<LoginState> {
 
       // preferences found but the token has expired -> login unsuccessful
       if (expiryData.isBefore(DateTime.now())) {
-        emit(LoginFailedState());
+        emit(TryLoginFailedState());
         return;
       }
 
@@ -183,10 +186,10 @@ class AuthCubit extends Cubit<LoginState> {
           .fetchClubID()
           .then((value) => log(User.clubs.toString()));
       autoLogOut();
-      emit(LoginSuccessState());
+      emit(TryLoginSuccessState());
     } catch (error) {
       log('tryAutoLogin');
-      emit(LoginError(error.toString()));
+      emit(TryLoginError(error.toString()));
     }
   }
 
@@ -202,5 +205,9 @@ class AuthCubit extends Cubit<LoginState> {
       log('autoLogout');
       emit(LoginError(error.toString()));
     }
+  }
+
+  void emitError(String e) {
+    emit(LoginError(e));
   }
 }

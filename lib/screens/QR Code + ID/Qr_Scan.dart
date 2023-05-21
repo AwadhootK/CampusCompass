@@ -32,7 +32,7 @@ class _ScanQrState extends State<ScanQr> {
             fontWeight: FontWeight.w500,
           ),
         ),
-        backgroundColor: Colors.teal,
+        backgroundColor: Colors.blue,
       ),
       body: Container(
         padding: const EdgeInsets.all(15),
@@ -42,17 +42,18 @@ class _ScanQrState extends State<ScanQr> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: const [
               Text(
-                "Place QR in the box to scan ",
+                "Place the QR Code in the camera to scan",
                 style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1),
+                  color: Colors.black,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 1,
+                ),
               ),
               SizedBox(
                 height: 10,
               ),
-              Text('Scanning is automatically done'),
+              Text('Scanning is done automatically'),
             ],
           )),
           Expanded(

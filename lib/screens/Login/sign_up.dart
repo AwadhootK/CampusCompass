@@ -7,9 +7,9 @@ import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
-enum branch { CE, IT, ENTC }
+enum Branch { CE, IT, ENTC }
 
-enum gender { male, female, other }
+enum Gender { male, female, other }
 
 class SignUp extends StatefulWidget {
   static const routeName = '/sign_up';
@@ -29,15 +29,14 @@ class _SignUpState extends State<SignUp> {
     'Gender': '',
     'ImageURL': '',
   };
-  List<String> bloodgrp = ['A+', 'B+', 'O+', 'AB+', 'A-', 'B-', 'O-', 'AB-'];
-  branch? state;
-  gender? gen;
+  List<String> bloodGroups = ['A+', 'B+', 'O+', 'AB+', 'A-', 'B-', 'O-', 'AB-'];
+  Branch? selectedBranch;
+  Gender? selectedGender;
   final TextEditingController _date = TextEditingController();
   var _dropVal = 'A+';
-  final _key = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
   File? _storedImage;
   String? _storedImageURL;
-  // String? _fetchedImageURL;
 
   @override
   void dispose() {
@@ -46,23 +45,26 @@ class _SignUpState extends State<SignUp> {
   }
 
   Future<void> _saveForm() async {
-    final isValid = _key.currentState!.validate();
+    final isValid = _formKey.currentState!.validate();
     if (!isValid) return;
-    _key.currentState!.save();
-    // print('FORM SAVED!!');
-    // print(_userData);
-    // await Firestore(path: 'users').post(_userData).then((value) {
-    //   User.m = _userData;
-    //   // print('DATA POSTED');
-    //   Navigator.of(context).pop();
-    // });
-    await BlocProvider.of<AuthCubit>(context)
-        .postUserDetails(
-          _userData,
-        )
-        .then(
-          (value) => Navigator.of(context).pop(),
-        );
+    _formKey.currentState!.save();
+    await BlocProvider.of<AuthCubit>(context).postUserDetails(_userData);
+    // .then((value) => Navigator.of(context).pop());
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    final imageFile = await ImagePicker().pickImage(
+      source: source,
+      maxHeight: 200,
+      maxWidth: 200,
+      imageQuality: 100,
+    );
+    if (imageFile == null) return;
+    setState(() {
+      _storedImage = File(imageFile.path);
+      _storedImageURL = base64UrlEncode(_storedImage!.readAsBytesSync());
+      _userData['ImageURL'] = _storedImageURL ?? '';
+    });
   }
 
   Future<void> _cameraImage() async {
@@ -70,6 +72,7 @@ class _SignUpState extends State<SignUp> {
       source: ImageSource.camera,
       maxHeight: 200,
       maxWidth: 200,
+      imageQuality: 100,
     );
     if (imageFile == null) return;
     setState(() {
@@ -97,23 +100,40 @@ class _SignUpState extends State<SignUp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('ENTER YOUR DETAILS'),
+        automaticallyImplyLeading: false,
+        title: const Text('Enter Your Details'),
+        centerTitle: true,
       ),
       body: Container(
         color: Colors.blue[100],
         padding: const EdgeInsets.all(15),
         child: Form(
-          key: _key,
+          key: _formKey,
           child: SingleChildScrollView(
             child: Column(
               children: [
+                const SizedBox(
+                  height: 20,
+                ),
                 TextFormField(
-                  decoration: const InputDecoration(label: Text('Your Name')),
+                  // decoration: const InputDecoration(labelText: 'Your Name'),
+                  decoration: const InputDecoration(
+                    labelText: 'Your Name',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10),
+                      ),
+                    ),
+                    focusColor: Colors.blue,
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.blue),
+                        borderRadius: BorderRadius.all(Radius.circular(12))),
+                  ),
                   keyboardType: TextInputType.name,
                   textInputAction: TextInputAction.next,
                   validator: (value) {
                     if (value == null) {
-                      return 'Please enter you Name';
+                      return 'Please enter your Name';
                     }
                     if (value.isEmpty) {
                       return 'Please enter a valid name';
@@ -122,9 +142,23 @@ class _SignUpState extends State<SignUp> {
                   },
                   onSaved: (newValue) => _userData['Name'] = newValue ?? '',
                 ),
+                const SizedBox(
+                  height: 20,
+                ),
                 TextFormField(
-                  decoration:
-                      const InputDecoration(label: Text('Enter Reg.ID Number')),
+                  // decoration: const InputDecoration(labelText: 'Reg.ID Number'),
+                  decoration: const InputDecoration(
+                    labelText: 'Reg. ID No.',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10),
+                      ),
+                    ),
+                    focusColor: Colors.blue,
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.blue),
+                        borderRadius: BorderRadius.all(Radius.circular(12))),
+                  ),
                   textInputAction: TextInputAction.next,
                   validator: (value) {
                     if (value == null) return 'Please provide a value';
@@ -132,7 +166,9 @@ class _SignUpState extends State<SignUp> {
                       return 'Please enter a valid Reg.ID number';
                     }
                     value.toUpperCase();
-                    if (!(value.startsWith('C') &&
+                    if (!((value.startsWith('C') ||
+                            value.startsWith('I') ||
+                            value.startsWith('E')) &&
                         value.length == 11 &&
                         value[2] == 'K')) {
                       return 'Please enter a valid Reg.ID number';
@@ -141,89 +177,124 @@ class _SignUpState extends State<SignUp> {
                   },
                   onSaved: (newValue) => _userData['UID'] = newValue ?? '',
                 ),
-                const SizedBox(
-                  height: 20,
+                const SizedBox(height: 15),
+                const Divider(
+                  color: Colors.blue,
                 ),
                 const Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Your Branch',
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
-                    )),
-                const SizedBox(
-                  height: 5,
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Select Your Branch',
+                    style: TextStyle(fontSize: 16),
+                  ),
                 ),
+                const Divider(
+                  color: Colors.blue,
+                ),
+                // const SizedBox(height: 5),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Container(
-                      color: Colors.green[300],
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          selectedBranch = Branch.CE;
+                          _userData['Branch'] = 'CE';
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: selectedBranch == Branch.CE
+                            ? Colors.green[300]
+                            : null,
+                      ),
                       child: const Text('CE'),
                     ),
-                    Checkbox(
-                        value: state == branch.CE ? true : false,
-                        onChanged: (val) {
-                          setState(() {
-                            state = branch.CE;
-                            _userData['Branch'] = 'CE';
-                          });
-                        }),
-                    Container(
-                      color: Colors.blue[400],
-                      child: const Text('IT'),
-                    ),
-                    Checkbox(
-                      value: state == branch.IT ? true : false,
-                      onChanged: (val) {
+                    ElevatedButton(
+                      onPressed: () {
                         setState(() {
-                          state = branch.IT;
+                          selectedBranch = Branch.IT;
                           _userData['Branch'] = 'IT';
                         });
                       },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: selectedBranch == Branch.IT
+                            ? Colors.blue[400]
+                            : null,
+                      ),
+                      child: const Text('IT'),
                     ),
-                    Container(
-                      color: Colors.purple[300],
-                      child: const Text('ENTC'),
-                    ),
-                    Checkbox(
-                      value: state == branch.ENTC ? true : false,
-                      onChanged: (val) {
+                    ElevatedButton(
+                      onPressed: () {
                         setState(() {
-                          state = branch.ENTC;
+                          selectedBranch = Branch.ENTC;
                           _userData['Branch'] = 'ENTC';
                         });
                       },
-                    )
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: selectedBranch == Branch.ENTC
+                            ? Colors.purple[300]
+                            : null,
+                      ),
+                      child: const Text('ENTC'),
+                    ),
                   ],
+                ),
+                const SizedBox(
+                  height: 25,
                 ),
                 TextField(
                   controller: _date,
+                  // decoration: const InputDecoration(
+                  //   labelText: 'Date of Birth',
+                  //   prefixIcon: Icon(Icons.calendar_month),
+                  // ),
                   decoration: const InputDecoration(
-                    label: Text('Date of Birth'),
-                    icon: Icon(Icons.calendar_month),
+                    prefixIcon: Icon(Icons.calendar_month),
+                    labelText: 'Date of Birth',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10),
+                      ),
+                    ),
+                    focusColor: Colors.blue,
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.blue),
+                        borderRadius: BorderRadius.all(Radius.circular(12))),
                   ),
                   onTap: () async {
-                    DateTime? _pickedDOB = await showDatePicker(
+                    DateTime? pickedDOB = await showDatePicker(
                       initialDatePickerMode: DatePickerMode.day,
                       context: context,
                       initialDate: DateTime.now(),
                       firstDate: DateTime(2000),
                       lastDate: DateTime(2100),
                     );
-                    if (_pickedDOB != null) {
+                    if (pickedDOB != null) {
                       setState(() {
-                        _date.text =
-                            DateFormat('yyyy-MM-dd').format(_pickedDOB);
+                        _date.text = DateFormat('yyyy-MM-dd').format(pickedDOB);
                         _userData['DOB'] = _date.text;
                       });
                     }
                   },
                 ),
+                const SizedBox(
+                  height: 20,
+                ),
                 TextFormField(
-                  decoration:
-                      const InputDecoration(label: Text('Phone Number')),
+                  // decoration: const InputDecoration(labelText: 'Phone Number'),
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.calendar_month),
+                    labelText: 'Phone Number',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10),
+                      ),
+                    ),
+                    focusColor: Colors.blue,
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.blue),
+                        borderRadius: BorderRadius.all(Radius.circular(12))),
+                  ),
                   keyboardType: TextInputType.phone,
                   textInputAction: TextInputAction.next,
                   validator: (value) {
@@ -240,50 +311,81 @@ class _SignUpState extends State<SignUp> {
                   },
                   onSaved: (newValue) => _userData['Phone'] = newValue!,
                 ),
+                const SizedBox(height: 20),
+                const Divider(
+                  color: Colors.blue,
+                ),
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Select Your Gender',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+                const Divider(
+                  color: Colors.blue,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     const Text('Male'),
                     Checkbox(
-                      value: gen == gender.male,
-                      onChanged: (_) {
+                      value: selectedGender == Gender.male,
+                      onChanged: (val) {
                         setState(() {
-                          gen = gender.male;
+                          selectedGender = Gender.male;
                           _userData['Gender'] = 'Male';
                         });
                       },
                     ),
                     const Text('Female'),
                     Checkbox(
-                      value: gen == gender.female,
-                      onChanged: (_) {
+                      value: selectedGender == Gender.female,
+                      onChanged: (val) {
                         setState(() {
-                          gen = gender.female;
+                          selectedGender = Gender.female;
                           _userData['Gender'] = 'Female';
                         });
                       },
                     ),
                     const Text('Other'),
                     Checkbox(
-                      value: gen == gender.other,
-                      onChanged: (_) {
+                      value: selectedGender == Gender.other,
+                      onChanged: (val) {
                         setState(() {
-                          gen = gender.other;
+                          selectedGender = Gender.other;
                           _userData['Gender'] = 'Other';
                         });
                       },
                     ),
                   ],
                 ),
+                const Divider(
+                  color: Colors.blue,
+                ),
+
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Select Blood Group',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+                const Divider(
+                  color: Colors.blue,
+                ),
+                const SizedBox(height: 10),
+
                 Container(
-                  padding: const EdgeInsets.all(10),
-                  color: Colors.blue[100],
+                  // padding: const EdgeInsets.all(10),
+                  color: Colors.blue[200],
                   alignment: Alignment.center,
                   child: DropdownButton<String>(
-                    dropdownColor: Colors.blue[300],
+                    iconEnabledColor: Colors.blue[800],
+                    dropdownColor: Colors.blue[400],
                     elevation: 10,
                     value: _dropVal,
-                    items: bloodgrp
+                    items: bloodGroups
                         .map<DropdownMenuItem<String>>(
                             (e) => DropdownMenuItem<String>(
                                   value: e,
@@ -301,23 +403,67 @@ class _SignUpState extends State<SignUp> {
                     },
                   ),
                 ),
-                const Text(
-                  'Enter an Image',
+                const SizedBox(height: 15),
+                const Divider(
+                  color: Colors.blue,
                 ),
-                const SizedBox(
-                  height: 20,
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Enter Your Image',
+                    style: TextStyle(fontSize: 16),
+                  ),
                 ),
+                const Divider(
+                  color: Colors.blue,
+                ),
+                const SizedBox(height: 10),
+
                 Container(
-                  color: Colors.blue[300],
+                  color: Colors.blue[200],
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      IconButton(
-                          onPressed: _cameraImage,
-                          icon: const Icon(Icons.camera)),
-                      IconButton(
+                      TextButton(
+                        onPressed: _cameraImage,
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.camera,
+                              color: Colors.blue.shade700,
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            const Text(
+                              'Open Camera',
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        height: 48,
+                        width: 20,
+                        color: Colors.blue[100],
+                      ),
+                      TextButton(
                           onPressed: _fileImage,
-                          icon: const Icon(Icons.file_copy)),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.file_copy,
+                                color: Colors.blue.shade700,
+                              ),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              const Text(
+                                'Open Gallery',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ],
+                          )),
                     ],
                   ),
                 ),
@@ -337,38 +483,17 @@ class _SignUpState extends State<SignUp> {
                   height: 20,
                 ),
                 Container(
-                  margin: const EdgeInsets.only(left: 100, right: 100),
+                  width: 100,
+                  margin: const EdgeInsets.symmetric(horizontal: 100),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(10),
                     color: Colors.black.withOpacity(0.9),
                   ),
                   child: TextButton(
-                      onPressed: _saveForm, child: const Icon(Icons.done)),
+                    onPressed: _saveForm,
+                    child: const Text('Submit'),
+                  ),
                 ),
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 500),
-                  curve: Curves.easeInOut,
-                  height: _storedImageURL == null ? 0 : 500,
-                  width: _storedImageURL == null ? 0 : 500,
-                  child: _storedImageURL == null
-                      ? null
-                      : Image.memory(base64Decode(_storedImageURL!)),
-                ),
-                // TEMP:
-                // TextButton(
-                //     onPressed: () async {
-                //       final d = await Firestore.fetchID('C2K21107008');
-                //       setState(() {
-                //         _fetchedImageURL = d['ImageURL'];
-                //       });
-                //     },
-                //     onLongPress: () => setState(() {
-                //           _fetchedImageURL = null;
-                //         }),
-                //     child: Container(
-                //         color: Colors.black,
-                //         padding: const EdgeInsets.all(20),
-                //         child: const Text('View Your Image')))
               ],
             ),
           ),
