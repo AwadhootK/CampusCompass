@@ -11,6 +11,7 @@ import '../../../helpers/global_data.dart';
 
 class PostWidget extends StatelessWidget {
   final String eventName;
+  final String actualEventName;
   final String imageUrl;
   final bool isAdmin;
   final Function deletePost;
@@ -19,6 +20,7 @@ class PostWidget extends StatelessWidget {
 
   const PostWidget({
     required this.eventName,
+    required this.actualEventName,
     required this.imageUrl,
     required this.isAdmin,
     required this.deletePost,
@@ -76,7 +78,7 @@ class PostWidget extends StatelessWidget {
             child: Row(
               children: [
                 Text(
-                  eventName,
+                  actualEventName,
                   style: const TextStyle(
                     fontSize: 16.0,
                     fontWeight: FontWeight.bold,
@@ -159,6 +161,7 @@ class _ClubEventState extends State<ClubEvent> {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: PostWidget(
+                            actualEventName: e['title']!,
                             eventName: e['originalName']!,
                             imageUrl: e['poster']!,
                             isAdmin: (User.m!['UID'] == User.clubs[clubName]),
