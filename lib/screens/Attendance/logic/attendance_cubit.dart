@@ -25,7 +25,7 @@ class AttendanceCubit extends Cubit<Attendance> {
           .set(details);
       // emit(AttendancePosted());
       await SharedPrefs.saveCount(_subjects, DateTime.now());
-      await fetch();
+      await fetch(false);
     } catch (error) {
       emit(AttendanceError(error: error.toString()));
     }
@@ -40,14 +40,14 @@ class AttendanceCubit extends Cubit<Attendance> {
           .doc(subject)
           .delete();
       await SharedPrefs.deleteSP(subject);
-      await fetch();
+      await fetch(false);
     } catch (error) {
       emit(AttendanceError(error: error.toString()));
     }
   }
 
-  Future<void> fetch() async {
-    emit(AttendanceLoading());
+  Future<void> fetch(bool val) async {
+    if (val) emit(AttendanceLoading());
     try {
       final response = await cr1
           .doc(User.m!['UID'].toString().substring(0, 11))
@@ -56,20 +56,21 @@ class AttendanceCubit extends Cubit<Attendance> {
 
       List<Map<String, dynamic>> details = [];
 
-      response.docs.forEach(
-        (element) async {
-          final date = await SharedPrefs.getCount(element.data()['name']);
-          if (date.inDays >= 7) {
-            var count = (date.inDays / 7).floor() *
-                int.parse(element.data()['conductedWeekly']);
-            dev.log(count.toString());
-            element.data()['total'] = count;
-            await incrementCount(element.data()['name'], count - 1, false);
-          }
-          details.insert(0, element.data());
-        },
-      );
-
+      for (var element in response.docs) {
+        final date = await SharedPrefs.getCount(element.data()['name']);
+        Map<String, dynamic> newElement = element.data();
+        if (date.inDays >= 7 && !val) {
+          var count = (date.inMinutes / 7).floor() *
+              int.parse(element.data()['conductedWeekly']);
+          newElement['total'] = count;
+          await incrementCount(newElement['name'], count - 1, false);
+        }
+        details.insert(0, newElement);
+      }
+      if (val) {
+        emit(IncrementUpdated());
+        return;
+      }
       emit(AttendanceLoaded(details: details));
     } catch (error) {
       emit(AttendanceError(error: error.toString()));
@@ -78,13 +79,13 @@ class AttendanceCubit extends Cubit<Attendance> {
 
   Future<void> incrementCount(String subject, int currentCount, bool c) async {
     try {
-      emit(AttendanceLoading());
+      // emit(AttendanceLoading());
       await cr1
           .doc(User.m!['UID'].toString().substring(0, 11))
           .collection('subjects')
           .doc(subject)
           .update({c ? 'attended' : 'total': currentCount + 1});
-      await fetch();
+      await fetch(false);
     } catch (e) {
       emit(AttendanceError(error: e.toString()));
     }

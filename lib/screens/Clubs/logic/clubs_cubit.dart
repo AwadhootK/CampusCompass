@@ -52,4 +52,33 @@ class ClubsCubit extends Cubit<ClubStates> {
       emit(ClubsErrorState(error.toString()));
     }
   }
+
+  Future<void> deleteEvent(String clubName, String eventName) async {
+    emit(ClubLoadingState());
+    try {
+      log('deleting event');
+      await cr1.doc(clubName).collection('posts').doc(eventName).delete();
+      await fetchClubEvents();
+      // .then((value) async => await fetchClubEvents());
+    } catch (error) {
+      emit(ClubsErrorState(error.toString()));
+    }
+  }
+
+  Future<void> editEvent(Map<String, String> event, String oldEventName) async {
+    emit(ClubLoadingState());
+    try {
+      log('editing event $oldEventName');
+      log(event.toString());
+      cr1
+          .doc(event['club'])
+          .collection('posts')
+          .doc(oldEventName)
+          .update(event);
+      await fetchClubEvents();
+      // .then((value) async => await fetchClubEvents());
+    } catch (error) {
+      emit(ClubsErrorState(error.toString()));
+    }
+  }
 }

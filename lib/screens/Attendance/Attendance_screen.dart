@@ -3,9 +3,11 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase/helpers/global_data.dart';
 import 'package:firebase/screens/Attendance/logic/attendance_cubit.dart';
+import 'package:firebase/screens/Attendance/pie_chart.dart';
 import 'package:firebase/screens/Attendance/widgets/subject_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pie_chart/pie_chart.dart';
 
 class MyAttendanceForm extends StatelessWidget {
   final Function addSubject;
@@ -13,8 +15,11 @@ class MyAttendanceForm extends StatelessWidget {
   MyAttendanceForm({required this.addSubject, required this.context});
 
   static final _formKey = GlobalKey<FormState>();
+
   int _numberOfSubjects = 0;
+
   String _subjects = "";
+
   Map<String, dynamic> details = {
     'attended': 0,
     'conductedWeekly': 0,
@@ -27,10 +32,11 @@ class MyAttendanceForm extends StatelessWidget {
       _formKey.currentState!.save();
     }
     try {
+      final nv = Navigator.of(context);
       await addSubject(details, details['name']);
-      Navigator.of(context).pop();
+      nv.pop();
     } catch (e) {
-      print('Error saving data: $e');
+      log('Error saving data: $e');
     }
   }
 
@@ -95,8 +101,11 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AttendanceCubit, Attendance>(
-      bloc: BlocProvider.of<AttendanceCubit>(context)..fetch(),
+      bloc: BlocProvider.of<AttendanceCubit>(context)..fetch(false),
+      buildWhen: (previous, current) =>
+          current is! IncrementUpdated && previous is! IncrementUpdated,
       builder: (context, state) {
+        log(state.toString());
         if (state is AttendanceLoading) {
           return const Center(
             child: CircularProgressIndicator(),
@@ -109,7 +118,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           return Stack(
             children: [
               if (state.details!.isEmpty)
-                Center(child: Text('No Subject Added for Attendance Tracking!'))
+                const Center(
+                    child: Text('No Subject Added for Attendance Tracking!'))
               else
                 ListView.builder(
                   itemCount: state.details == null ? 0 : state.details!.length,
@@ -132,7 +142,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                 ),
               Positioned(
                 bottom: 10,
-                right: 10,
+                right: 13,
                 child: FloatingActionButton(
                   onPressed: () {
                     showModalBottomSheet(
@@ -145,6 +155,28 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     );
                   },
                   child: const Icon(Icons.add),
+                ),
+              ),
+              Positioned(
+                bottom: 10,
+                left: 13,
+                child: FloatingActionButton(
+                  onPressed: () {
+                    Map<String, double> dataMap = {};
+                    for (var i = 0; i < state.details!.length; i++) {
+                      Map<String, dynamic> m = state.details![i];
+                      dataMap[m['name']] =
+                          double.parse(m['attended'].toString()) /
+                              double.parse(m['total']);
+                    }
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            AttendancePieChart(dataMap: dataMap),
+                      ),
+                    );
+                  },
+                  child: const Icon(Icons.pie_chart),
                 ),
               ),
             ],

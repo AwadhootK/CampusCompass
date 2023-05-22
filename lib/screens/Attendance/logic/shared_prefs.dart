@@ -11,9 +11,8 @@ class SharedPrefs {
     final prefs = await SharedPreferences.getInstance();
     final value = prefs.getString(subject);
     if (value != null) {
-      return DateFormat('yyyy-MM-ddTHH:mm:ss')
-          .parse(value)
-          .difference(DateTime.now());
+      return DateTime.now()
+          .difference(DateFormat('yyyy-MM-ddTHH:mm:ss').parse(value));
     } else {
       return Duration.zero;
     }

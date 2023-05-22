@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 class SubjectCard extends StatefulWidget {
   final String subjectName;
-  final int attendedLectures;
-  final int totalLectures;
+  int attendedLectures;
+  int totalLectures;
   final Function deleteSubject;
   final Function incrementCount;
 
@@ -66,17 +66,21 @@ class _SubjectCardState extends State<SubjectCard> {
               IconButton(
                 color: Colors.blue,
                 icon: const Icon(Icons.add),
-                onPressed: () async {
-                  await widget.incrementCount(
-                      widget.subjectName, widget.attendedLectures, true);
-
-                  // setState(() {
-                  //   details = fetch();
-                  //   details['attended']++;
-                  //   PostRecord();
-                  // });
-                  // Perform the desired action when the '+' button is pressed
-                },
+                onPressed: widget.attendedLectures != widget.totalLectures
+                    ? () async {
+                        setState(() {
+                          widget.attendedLectures++;
+                        });
+                        await widget.incrementCount(widget.subjectName,
+                            widget.attendedLectures - 1, true);
+                        // setState(() {
+                        //   details = fetch();
+                        //   details['attended']++;
+                        //   PostRecord();
+                        // });
+                        // Perform the desired action when the '+' button is pressed
+                      }
+                    : null,
               ),
               IconButton(
                 color: Colors.blue,

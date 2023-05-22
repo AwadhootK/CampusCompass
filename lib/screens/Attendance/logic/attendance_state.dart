@@ -11,6 +11,8 @@ class AttendanceLoaded extends Attendance {
   AttendanceLoaded({required this.details});
 }
 
+class IncrementUpdated extends Attendance {}
+
 class AttendanceError extends Attendance {
   String error;
   AttendanceError({required this.error});

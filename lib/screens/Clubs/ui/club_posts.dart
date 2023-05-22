@@ -9,6 +9,14 @@ import 'package:intl/intl.dart';
 
 class ClubsForm extends StatefulWidget {
   static const routeName = '/clubs_form';
+  final bool isEditing;
+  final Map<String, String> eventDetails;
+  final String oldEventName;
+
+  ClubsForm(
+      {this.isEditing = false,
+      this.eventDetails = const {},
+      this.oldEventName = ''});
 
   @override
   State<ClubsForm> createState() => _MyWidgetState();
@@ -44,6 +52,19 @@ class _MyWidgetState extends State<ClubsForm> {
     if (!isValid) return;
     formkey.currentState!.save();
     map_1['club'] = ModalRoute.of(context)!.settings.arguments as String;
+    if (widget.isEditing) {
+      BlocProvider.of<ClubsCubit>(context)
+          .editEvent(
+        widget.eventDetails,
+        widget.oldEventName,
+      )
+          .then((value) {
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
+        BlocProvider.of<ClubsCubit>(context).fetchClubEvents();
+      });
+      return;
+    }
     BlocProvider.of<ClubsCubit>(context).putEvent(map_1).then((value) {
       Navigator.of(context).pop();
       Navigator.of(context).pop();
@@ -101,17 +122,26 @@ class _MyWidgetState extends State<ClubsForm> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
+                      const SizedBox(
+                        height: 10,
+                      ),
                       TextFormField(
-                        decoration: const InputDecoration(
-                          labelText: 'Event Title',
-                          labelStyle: TextStyle(color: Colors.blue),
-                          border: OutlineInputBorder(
+                        decoration: InputDecoration(
+                          labelText: widget.isEditing
+                              ? widget.eventDetails['title']
+                              : 'Enter Title',
+                          labelStyle: TextStyle(
+                            color: widget.isEditing
+                                ? Colors.grey[600]
+                                : Colors.blue,
+                          ),
+                          border: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(
                               Radius.circular(10),
                             ),
                           ),
                           focusColor: Colors.blue,
-                          enabledBorder: OutlineInputBorder(
+                          enabledBorder: const OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.blue),
                               borderRadius:
                                   BorderRadius.all(Radius.circular(12))),
@@ -122,6 +152,10 @@ class _MyWidgetState extends State<ClubsForm> {
                           return null;
                         },
                         onSaved: (value) {
+                          if (widget.isEditing) {
+                            widget.eventDetails['title'] = value.toString();
+                            return;
+                          }
                           map_1['title'] = value.toString();
                         },
                       ),
@@ -130,16 +164,22 @@ class _MyWidgetState extends State<ClubsForm> {
                       ),
                       TextField(
                         controller: dateTime,
-                        decoration: const InputDecoration(
-                          labelText: 'Event Date',
-                          labelStyle: TextStyle(color: Colors.blue),
-                          border: OutlineInputBorder(
+                        decoration: InputDecoration(
+                          labelText: widget.isEditing
+                              ? widget.eventDetails['date']
+                              : 'Enter Date',
+                          labelStyle: TextStyle(
+                            color: widget.isEditing
+                                ? Colors.grey[600]
+                                : Colors.blue,
+                          ),
+                          border: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(
                               Radius.circular(10),
                             ),
                           ),
                           focusColor: Colors.blue,
-                          enabledBorder: OutlineInputBorder(
+                          enabledBorder: const OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.blue),
                               borderRadius:
                                   BorderRadius.all(Radius.circular(12))),
@@ -156,7 +196,11 @@ class _MyWidgetState extends State<ClubsForm> {
                             setState(() {
                               dateTime.text =
                                   DateFormat('yyyy-MM-dd').format(_picked);
-                              map_1['date'] = dateTime.text;
+                              if (widget.isEditing) {
+                                widget.eventDetails['date'] = dateTime.text;
+                              } else {
+                                map_1['date'] = dateTime.text;
+                              }
                             });
                           }
                         },
@@ -165,16 +209,22 @@ class _MyWidgetState extends State<ClubsForm> {
                         height: 20,
                       ),
                       TextFormField(
-                        decoration: const InputDecoration(
-                          labelText: 'Event Description',
-                          labelStyle: TextStyle(color: Colors.blue),
-                          border: OutlineInputBorder(
+                        decoration: InputDecoration(
+                          labelText: widget.isEditing
+                              ? widget.eventDetails['description']
+                              : 'Enter Description',
+                          labelStyle: TextStyle(
+                            color: widget.isEditing
+                                ? Colors.grey[600]
+                                : Colors.blue,
+                          ),
+                          border: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(
                               Radius.circular(10),
                             ),
                           ),
                           focusColor: Colors.blue,
-                          enabledBorder: OutlineInputBorder(
+                          enabledBorder: const OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.blue),
                               borderRadius:
                                   BorderRadius.all(Radius.circular(12))),
@@ -191,6 +241,11 @@ class _MyWidgetState extends State<ClubsForm> {
                           return null;
                         },
                         onSaved: (value) {
+                          if (widget.isEditing) {
+                            widget.eventDetails['description'] =
+                                value.toString();
+                            return;
+                          }
                           map_1['description'] = value.toString();
                         },
                       ),
@@ -208,6 +263,16 @@ class _MyWidgetState extends State<ClubsForm> {
                       const Divider(
                         color: Colors.blue,
                       ),
+                      if (widget.isEditing && storedImage == null)
+                        AnimatedContainer(
+                          duration: const Duration(milliseconds: 500),
+                          padding: const EdgeInsets.all(10),
+                          margin: const EdgeInsets.all(10),
+                          child: Image.memory(
+                            base64Decode(widget.eventDetails['poster']!),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       const SizedBox(height: 10),
                       Container(
                         color: Colors.blue[200],

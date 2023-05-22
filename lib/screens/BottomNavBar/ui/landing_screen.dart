@@ -139,7 +139,7 @@ class _LandingPageState extends State<LandingPage> {
             backgroundColor: Colors.blue,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(Icons.home_filled),
             label: 'Clubs',
             backgroundColor: Colors.red,
           ),
@@ -155,7 +155,7 @@ class _LandingPageState extends State<LandingPage> {
           ),
           BottomNavigationBarItem(
               icon: Icon(Icons.food_bank),
-              label: 'Food',
+              label: 'Canteen',
               backgroundColor: Colors.purple),
         ],
       ),

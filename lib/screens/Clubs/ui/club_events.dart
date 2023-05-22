@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:firebase/screens/Clubs/logic/clubs_cubit.dart';
 import 'package:firebase/screens/Clubs/ui/club_posts.dart';
@@ -11,10 +12,18 @@ import '../../../helpers/global_data.dart';
 class PostWidget extends StatelessWidget {
   final String eventName;
   final String imageUrl;
+  final bool isAdmin;
+  final Function deletePost;
+  final Function editEvent;
+  final String clubName;
 
   const PostWidget({
     required this.eventName,
     required this.imageUrl,
+    required this.isAdmin,
+    required this.deletePost,
+    required this.editEvent,
+    required this.clubName,
   });
 
   @override
@@ -64,12 +73,41 @@ class PostWidget extends StatelessWidget {
                 bottomRight: Radius.circular(12.0),
               ),
             ),
-            child: Text(
-              eventName,
-              style: const TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.bold,
-              ),
+            child: Row(
+              children: [
+                Text(
+                  eventName,
+                  style: const TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const Spacer(),
+                IconButton(
+                  onPressed: () {
+                    editEvent();
+                  },
+                  icon: const Icon(Icons.edit),
+                ),
+                IconButton(
+                  onPressed: () async {
+                    final sc = ScaffoldMessenger.of(context);
+                    final nv = Navigator.of(context);
+                    await deletePost(clubName, eventName);
+                    sc
+                      ..hideCurrentSnackBar()
+                      ..showSnackBar(
+                        SnackBar(
+                          duration: const Duration(seconds: 2),
+                          backgroundColor: Colors.green,
+                          content: Text('Event $eventName Deleted'),
+                        ),
+                      );
+                    nv.pop();
+                  },
+                  icon: const Icon(Icons.delete),
+                ),
+              ],
             ),
           ),
         ],
@@ -121,6 +159,27 @@ class _ClubEventState extends State<ClubEvent> {
                           child: PostWidget(
                             eventName: e['title']!,
                             imageUrl: e['poster']!,
+                            isAdmin: (User.m!['UID'] == User.clubs[clubName]),
+                            deletePost: BlocProvider.of<ClubsCubit>(context)
+                                .deleteEvent,
+                            editEvent: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => BlocProvider(
+                                    create: (context) => ClubsCubit(),
+                                    child: ClubsForm(
+                                      isEditing: true,
+                                      eventDetails: e,
+                                      oldEventName: e['title']!,
+                                    ),
+                                  ),
+                                  settings: RouteSettings(
+                                    arguments: clubName,
+                                  ),
+                                ),
+                              );
+                            },
+                            clubName: clubName,
                           ),
                         ),
                       ),

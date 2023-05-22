@@ -49,6 +49,7 @@ dependencies:
   qr_flutter: ^4.0.0
   flutter_local_notifications: ^14.1.0
   flutter_native_timezone: ^2.0.0
+  pie_chart: ^5.3.2
 
 dev_dependencies:
   flutter_test:
