@@ -159,7 +159,7 @@ class _ClubEventState extends State<ClubEvent> {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: PostWidget(
-                            eventName: e['title']!,
+                            eventName: e['originalName']!,
                             imageUrl: e['poster']!,
                             isAdmin: (User.m!['UID'] == User.clubs[clubName]),
                             deletePost: BlocProvider.of<ClubsCubit>(context)
