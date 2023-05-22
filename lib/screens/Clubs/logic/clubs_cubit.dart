@@ -42,6 +42,7 @@ class ClubsCubit extends Cubit<ClubStates> {
   Future<void> putEvent(Map<String, String> event) async {
     emit(ClubLoadingState());
     try {
+      event['originalName'] = event['title']!;
       cr1
           .doc(event['club'])
           .collection('posts')
@@ -65,15 +66,15 @@ class ClubsCubit extends Cubit<ClubStates> {
     }
   }
 
-  Future<void> editEvent(Map<String, String> event, String oldEventName) async {
+  Future<void> editEvent(Map<String, String> event) async {
     emit(ClubLoadingState());
     try {
-      log('editing event $oldEventName');
-      log(event.toString());
+      log('editing event ${event['originalName']}');
+      // log(event.toString());
       cr1
           .doc(event['club'])
           .collection('posts')
-          .doc(oldEventName)
+          .doc(event['originalName'])
           .update(event);
       await fetchClubEvents();
       // .then((value) async => await fetchClubEvents());

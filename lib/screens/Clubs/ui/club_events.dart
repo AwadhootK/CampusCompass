@@ -172,7 +172,6 @@ class _ClubEventState extends State<ClubEvent> {
                                     child: ClubsForm(
                                       isEditing: true,
                                       eventDetails: e,
-                                      oldEventName: e['title']!,
                                     ),
                                   ),
                                   settings: RouteSettings(

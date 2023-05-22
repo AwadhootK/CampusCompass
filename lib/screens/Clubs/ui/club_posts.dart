@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:firebase/screens/Clubs/logic/clubs_cubit.dart';
@@ -11,12 +12,11 @@ class ClubsForm extends StatefulWidget {
   static const routeName = '/clubs_form';
   final bool isEditing;
   final Map<String, String> eventDetails;
-  final String oldEventName;
 
-  ClubsForm(
-      {this.isEditing = false,
-      this.eventDetails = const {},
-      this.oldEventName = ''});
+  ClubsForm({
+    this.isEditing = false,
+    this.eventDetails = const {},
+  });
 
   @override
   State<ClubsForm> createState() => _MyWidgetState();
@@ -36,6 +36,7 @@ class _MyWidgetState extends State<ClubsForm> {
     'description': "",
     'poster': "",
     'club': "",
+    'originalName': '',
   };
 
   @override
@@ -53,15 +54,15 @@ class _MyWidgetState extends State<ClubsForm> {
     formkey.currentState!.save();
     map_1['club'] = ModalRoute.of(context)!.settings.arguments as String;
     if (widget.isEditing) {
+      log(widget.eventDetails.toString());
       BlocProvider.of<ClubsCubit>(context)
           .editEvent(
         widget.eventDetails,
-        widget.oldEventName,
       )
-          .then((value) {
+          .then((value) async {
         Navigator.of(context).pop();
         Navigator.of(context).pop();
-        BlocProvider.of<ClubsCubit>(context).fetchClubEvents();
+        await BlocProvider.of<ClubsCubit>(context).fetchClubEvents();
       });
       return;
     }
@@ -82,7 +83,11 @@ class _MyWidgetState extends State<ClubsForm> {
     setState(() {
       storedImage = File(imageFile.path);
       storedImg = base64UrlEncode(storedImage!.readAsBytesSync());
-      map_1['poster'] = storedImg ?? '';
+      if (widget.isEditing) {
+        widget.eventDetails['poster'] = storedImg ?? map_1['poster'] ?? '';
+      } else {
+        map_1['poster'] = storedImg ?? '';
+      }
     });
   }
 
@@ -96,12 +101,18 @@ class _MyWidgetState extends State<ClubsForm> {
     setState(() {
       storedImage = File(imageFile.path);
       storedImg = base64UrlEncode(storedImage!.readAsBytesSync());
-      map_1['poster'] = storedImg ?? '';
+      // map_1['poster'] = storedImg ?? '';
+      if (widget.isEditing) {
+        widget.eventDetails['poster'] = storedImg ?? map_1['poster'] ?? '';
+      } else {
+        map_1['poster'] = storedImg ?? '';
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    log(widget.eventDetails.toString());
     return Scaffold(
       backgroundColor: Colors.blue[100],
       appBar: AppBar(
@@ -153,6 +164,9 @@ class _MyWidgetState extends State<ClubsForm> {
                         },
                         onSaved: (value) {
                           if (widget.isEditing) {
+                            if (value == '' || value == null) {
+                              return;
+                            }
                             widget.eventDetails['title'] = value.toString();
                             return;
                           }
@@ -242,6 +256,9 @@ class _MyWidgetState extends State<ClubsForm> {
                         },
                         onSaved: (value) {
                           if (widget.isEditing) {
+                            if (value == '' || value == null) {
+                              return;
+                            }
                             widget.eventDetails['description'] =
                                 value.toString();
                             return;
