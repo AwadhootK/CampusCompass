@@ -19,6 +19,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: BlocConsumer<ResultCubit, ResultState>(
         listener: (context, state) {},
         builder: (context, state) {

@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:firebase/screens/Attendance/logic/attendance_cubit.dart';
 import 'package:flutter/services.dart';
 
 import 'package:firebase/screens/BottomNavBar/logic/bottomnavbar_cubit.dart';
@@ -69,6 +70,9 @@ class myApp extends StatelessWidget {
                     create: (context) => ClubsCubit(),
                   ),
                   BlocProvider(
+                    create: (context) => AttendanceCubit(),
+                  ),
+                  BlocProvider(
                     create: (context) => BottomNavBarCubit()..changeIndex(0),
                   ),
                 ],
@@ -87,6 +91,9 @@ class myApp extends StatelessWidget {
                       providers: [
                         BlocProvider(
                           create: (context) => ClubsCubit(),
+                        ),
+                        BlocProvider(
+                          create: (context) => AttendanceCubit(),
                         ),
                         BlocProvider(
                           create: (context) =>

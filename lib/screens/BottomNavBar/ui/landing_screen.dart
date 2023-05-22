@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:firebase/helpers/global_data.dart';
+import 'package:firebase/screens/Attendance/Attendance_screen.dart';
+import 'package:firebase/screens/Attendance/logic/attendance_cubit.dart';
 import 'package:firebase/screens/Attendance/widgets/subject_card.dart';
 import 'package:firebase/screens/BottomNavBar/logic/bottomnavbar_cubit.dart';
 import 'package:firebase/screens/Canteen/admin/logic/daily_item_cubit.dart';
@@ -93,13 +95,14 @@ class _LandingPageState extends State<LandingPage> {
           } else if (state is BottomNavLibrary) {
             return Center(
               child: BlocProvider(
-                create: (context) => LibraryBloc(),
+                create: (ctx) => LibraryBloc(),
                 child: LibraryScreen(),
               ),
             );
           } else if (state is BottomNavAttendance) {
-            return Center(
-              child: MyAttendance(),
+            return BlocProvider.value(
+              value: BlocProvider.of<AttendanceCubit>(context),
+              child: AttendanceScreen(),
             );
           } else if (state is BottomNavCanteen) {
             return MultiBlocProvider(

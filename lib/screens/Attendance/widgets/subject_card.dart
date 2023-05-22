@@ -1,20 +1,30 @@
+import 'package:firebase/screens/Attendance/Attendance_screen.dart';
 import 'package:flutter/material.dart';
 
-class SubjectCard extends StatelessWidget {
+class SubjectCard extends StatefulWidget {
   final String subjectName;
   final int attendedLectures;
   final int totalLectures;
+  final Function deleteSubject;
+  final Function incrementCount;
 
   SubjectCard({
     required this.subjectName,
     required this.attendedLectures,
     required this.totalLectures,
+    required this.deleteSubject,
+    required this.incrementCount,
   });
 
   @override
+  State<SubjectCard> createState() => _SubjectCardState();
+}
+
+class _SubjectCardState extends State<SubjectCard> {
+  @override
   Widget build(BuildContext context) {
-    var attendance =
-        ((attendedLectures / totalLectures) * 100).toStringAsPrecision(4);
+    var attendance = ((widget.attendedLectures / widget.totalLectures) * 100)
+        .toStringAsPrecision(4);
     return Card(
       elevation: 2.0,
       shape: RoundedRectangleBorder(
@@ -22,72 +32,64 @@ class SubjectCard extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  subjectName,
-                  style: const TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 8.0),
-                Text(
-                  'Attendance: $attendance %',
-                  style: const TextStyle(fontSize: 16.0),
-                ),
-                const SizedBox(height: 8.0),
-                Text(
-                  'Total Lectures: $totalLectures',
-                  style: const TextStyle(fontSize: 16.0),
-                ),
-                const SizedBox(height: 8.0),
-                Text(
-                  'Attended Lectures: $attendedLectures',
-                  style: const TextStyle(fontSize: 16.0),
-                ),
-              ],
-            ),
-            IconButton(
-              color: Colors.blue,
-              icon: const Icon(Icons.add),
-              onPressed: () {
-                // Perform the desired action when the '+' button is pressed
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// Example usage:
-class MyAttendance extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Subject Cards'),
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+        child: SingleChildScrollView(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SubjectCard(
-                subjectName: 'DSA',
-                attendedLectures: 5,
-                totalLectures: 10,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.subjectName,
+                    style: const TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 2.0),
+                  Text(
+                    'Attendance: $attendance %',
+                    style: const TextStyle(fontSize: 16.0),
+                  ),
+                  const SizedBox(height: 2.0),
+                  Text(
+                    'Total Lectures: ${widget.totalLectures}',
+                    style: const TextStyle(fontSize: 16.0),
+                  ),
+                  const SizedBox(height: 2.0),
+                  Text(
+                    'Attended Lectures: ${widget.attendedLectures}',
+                    style: const TextStyle(fontSize: 16.0),
+                  ),
+                ],
               ),
-              SubjectCard(
-                subjectName: 'EM-3',
-                attendedLectures: 7,
-                totalLectures: 12,
+              IconButton(
+                color: Colors.blue,
+                icon: const Icon(Icons.add),
+                onPressed: () async {
+                  await widget.incrementCount(
+                      widget.subjectName, widget.attendedLectures, true);
+
+                  // setState(() {
+                  //   details = fetch();
+                  //   details['attended']++;
+                  //   PostRecord();
+                  // });
+                  // Perform the desired action when the '+' button is pressed
+                },
+              ),
+              IconButton(
+                color: Colors.blue,
+                icon: const Icon(Icons.delete),
+                onPressed: () async {
+                  await widget.deleteSubject(widget.subjectName);
+                  // setState(() {
+                  //   details = fetch();
+                  //   details['attended']++;
+                  //   PostRecord();
+                  // });
+                  // Perform the desired action when the '+' button is pressed
+                },
               ),
             ],
           ),
