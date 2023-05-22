@@ -82,31 +82,33 @@ class PostWidget extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const Spacer(),
-                IconButton(
-                  onPressed: () {
-                    editEvent();
-                  },
-                  icon: const Icon(Icons.edit),
-                ),
-                IconButton(
-                  onPressed: () async {
-                    final sc = ScaffoldMessenger.of(context);
-                    final nv = Navigator.of(context);
-                    await deletePost(clubName, eventName);
-                    sc
-                      ..hideCurrentSnackBar()
-                      ..showSnackBar(
-                        SnackBar(
-                          duration: const Duration(seconds: 2),
-                          backgroundColor: Colors.green,
-                          content: Text('Event $eventName Deleted'),
-                        ),
-                      );
-                    nv.pop();
-                  },
-                  icon: const Icon(Icons.delete),
-                ),
+                if (isAdmin) const Spacer(),
+                if (isAdmin)
+                  IconButton(
+                    onPressed: () {
+                      editEvent();
+                    },
+                    icon: const Icon(Icons.edit),
+                  ),
+                if (isAdmin)
+                  IconButton(
+                    onPressed: () async {
+                      final sc = ScaffoldMessenger.of(context);
+                      final nv = Navigator.of(context);
+                      await deletePost(clubName, eventName);
+                      sc
+                        ..hideCurrentSnackBar()
+                        ..showSnackBar(
+                          SnackBar(
+                            duration: const Duration(seconds: 2),
+                            backgroundColor: Colors.green,
+                            content: Text('Event $eventName Deleted'),
+                          ),
+                        );
+                      nv.pop();
+                    },
+                    icon: const Icon(Icons.delete),
+                  ),
               ],
             ),
           ),
