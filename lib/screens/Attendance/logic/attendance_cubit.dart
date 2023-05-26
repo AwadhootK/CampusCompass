@@ -2,8 +2,8 @@ import 'dart:developer' as dev;
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase/helpers/global_data.dart';
-import 'package:firebase/screens/Attendance/logic/shared_prefs.dart';
+import 'package:CampusCompass/helpers/global_data.dart';
+import 'package:CampusCompass/screens/Attendance/logic/shared_prefs.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 part 'attendance_state.dart';
 

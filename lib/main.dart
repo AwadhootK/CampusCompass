@@ -1,12 +1,12 @@
 import 'dart:developer';
-import 'package:firebase/screens/Attendance/logic/attendance_cubit.dart';
+import 'package:CampusCompass/screens/Attendance/logic/attendance_cubit.dart';
 import 'package:flutter/services.dart';
 
-import 'package:firebase/screens/BottomNavBar/logic/bottomnavbar_cubit.dart';
-import 'package:firebase/screens/BottomNavBar/ui/landing_screen.dart';
-import 'package:firebase/screens/Clubs/logic/clubs_cubit.dart';
-import 'package:firebase/screens/Clubs/ui/clubs_screen.dart';
-import 'package:firebase/screens/Login/logic/login_cubit.dart';
+import 'package:CampusCompass/screens/BottomNavBar/logic/bottomnavbar_cubit.dart';
+import 'package:CampusCompass/screens/BottomNavBar/ui/landing_screen.dart';
+import 'package:CampusCompass/screens/Clubs/logic/clubs_cubit.dart';
+import 'package:CampusCompass/screens/Clubs/ui/clubs_screen.dart';
+import 'package:CampusCompass/screens/Login/logic/login_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -42,6 +42,7 @@ class myApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        title: "CampusCompass",
         debugShowCheckedModeBanner: false,
         home: BlocConsumer<AuthCubit, LoginState>(
           listener: (context, state) {

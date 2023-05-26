@@ -12,7 +12,7 @@ class SplashScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: const [
             Text(
-              'Campus Compass',
+              'CampusCompass',
               style: TextStyle(fontSize: 20),
             ),
             SizedBox(

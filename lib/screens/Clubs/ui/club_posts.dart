@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:firebase/screens/Clubs/logic/clubs_cubit.dart';
+import 'package:CampusCompass/screens/Clubs/logic/clubs_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -114,8 +114,9 @@ class _MyWidgetState extends State<ClubsForm> {
   Widget build(BuildContext context) {
     log(widget.eventDetails.toString());
     return Scaffold(
-      backgroundColor: Colors.blue[100],
+      backgroundColor: Colors.grey[200],
       appBar: AppBar(
+        backgroundColor: Colors.black54,
         title: const Text('Enter Event Details'),
         centerTitle: true,
       ),
@@ -144,16 +145,16 @@ class _MyWidgetState extends State<ClubsForm> {
                           labelStyle: TextStyle(
                             color: widget.isEditing
                                 ? Colors.grey[600]
-                                : Colors.blue,
+                                : Colors.black,
                           ),
                           border: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(
                               Radius.circular(10),
                             ),
                           ),
-                          focusColor: Colors.blue,
+                          focusColor: Colors.black,
                           enabledBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.blue),
+                              borderSide: BorderSide(color: Colors.black),
                               borderRadius:
                                   BorderRadius.all(Radius.circular(12))),
                         ),
@@ -185,16 +186,16 @@ class _MyWidgetState extends State<ClubsForm> {
                           labelStyle: TextStyle(
                             color: widget.isEditing
                                 ? Colors.grey[600]
-                                : Colors.blue,
+                                : Colors.black,
                           ),
                           border: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(
                               Radius.circular(10),
                             ),
                           ),
-                          focusColor: Colors.blue,
+                          focusColor: Colors.black,
                           enabledBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.blue),
+                              borderSide: BorderSide(color: Colors.black),
                               borderRadius:
                                   BorderRadius.all(Radius.circular(12))),
                         ),
@@ -230,16 +231,16 @@ class _MyWidgetState extends State<ClubsForm> {
                           labelStyle: TextStyle(
                             color: widget.isEditing
                                 ? Colors.grey[600]
-                                : Colors.blue,
+                                : Colors.black,
                           ),
                           border: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(
                               Radius.circular(10),
                             ),
                           ),
-                          focusColor: Colors.blue,
+                          focusColor: Colors.black,
                           enabledBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.blue),
+                              borderSide: BorderSide(color: Colors.black),
                               borderRadius:
                                   BorderRadius.all(Radius.circular(12))),
                         ),
@@ -268,7 +269,7 @@ class _MyWidgetState extends State<ClubsForm> {
                       ),
                       const SizedBox(height: 15),
                       const Divider(
-                        color: Colors.blue,
+                        color: Colors.black,
                       ),
                       const Align(
                         alignment: Alignment.centerLeft,
@@ -278,7 +279,7 @@ class _MyWidgetState extends State<ClubsForm> {
                         ),
                       ),
                       const Divider(
-                        color: Colors.blue,
+                        color: Colors.black,
                       ),
                       if (widget.isEditing && storedImage == null)
                         AnimatedContainer(
@@ -292,24 +293,24 @@ class _MyWidgetState extends State<ClubsForm> {
                         ),
                       const SizedBox(height: 10),
                       Container(
-                        color: Colors.blue[200],
+                        color: Colors.black87,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             TextButton(
                               onPressed: _cameraImage,
                               child: Row(
-                                children: [
+                                children: const [
                                   Icon(
                                     Icons.camera,
-                                    color: Colors.blue.shade700,
+                                    color: Colors.white,
                                   ),
-                                  const SizedBox(
+                                  SizedBox(
                                     width: 5,
                                   ),
-                                  const Text(
+                                  Text(
                                     'Open Camera',
-                                    style: TextStyle(color: Colors.black),
+                                    style: TextStyle(color: Colors.white),
                                   ),
                                 ],
                               ),
@@ -317,22 +318,22 @@ class _MyWidgetState extends State<ClubsForm> {
                             Container(
                               height: 48,
                               width: 20,
-                              color: Colors.blue[100],
+                              color: Colors.grey[200],
                             ),
                             TextButton(
                                 onPressed: _fileImage,
                                 child: Row(
-                                  children: [
+                                  children: const [
                                     Icon(
                                       Icons.file_copy,
-                                      color: Colors.blue.shade700,
+                                      color: Colors.white,
                                     ),
-                                    const SizedBox(
+                                    SizedBox(
                                       width: 5,
                                     ),
-                                    const Text(
+                                    Text(
                                       'Open Gallery',
-                                      style: TextStyle(color: Colors.black),
+                                      style: TextStyle(color: Colors.white),
                                     ),
                                   ],
                                 )),
@@ -353,6 +354,8 @@ class _MyWidgetState extends State<ClubsForm> {
                       ),
                       const SizedBox(height: 20),
                       ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.black),
                         child: const Text('Submit'),
                         onPressed: () => _saveform(),
                       ),

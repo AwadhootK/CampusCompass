@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:firebase/helpers/global_data.dart';
-import 'package:firebase/screens/Login/logic/login_cubit.dart';
+import 'package:CampusCompass/helpers/global_data.dart';
+import 'package:CampusCompass/screens/Login/logic/login_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';

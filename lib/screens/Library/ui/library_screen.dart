@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:firebase/screens/Library/logic/library_cubit.dart';
+import 'package:CampusCompass/screens/Library/logic/library_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../logic/notifications_services.dart';
@@ -100,6 +100,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
                   bottom: 10,
                   right: 10,
                   child: FloatingActionButton(
+                    backgroundColor: Colors.green,
                     child: const Icon(Icons.add),
                     onPressed: () {
                       showModalBottomSheet(

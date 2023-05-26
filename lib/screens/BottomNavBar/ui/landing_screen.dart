@@ -1,20 +1,20 @@
 import 'dart:developer';
 
-import 'package:firebase/helpers/global_data.dart';
-import 'package:firebase/screens/Attendance/Attendance_screen.dart';
-import 'package:firebase/screens/Attendance/logic/attendance_cubit.dart';
-import 'package:firebase/screens/Attendance/widgets/subject_card.dart';
-import 'package:firebase/screens/BottomNavBar/logic/bottomnavbar_cubit.dart';
-import 'package:firebase/screens/Canteen/admin/logic/daily_item_cubit.dart';
-import 'package:firebase/screens/Canteen/admin/logic/food_item_cubit.dart';
-import 'package:firebase/screens/Canteen/canteen_menu.dart';
-import 'package:firebase/screens/Clubs/logic/clubs_cubit.dart';
-import 'package:firebase/screens/Clubs/ui/clubs_screen.dart';
-import 'package:firebase/screens/Library/logic/library_cubit.dart';
-import 'package:firebase/screens/Library/ui/library_screen.dart';
-import 'package:firebase/screens/Login/logic/login_cubit.dart';
-import 'package:firebase/screens/QR%20Code%20+%20ID/Profile_screen.dart';
-import 'package:firebase/screens/QR%20Code%20+%20ID/logic/result_cubit.dart';
+import 'package:CampusCompass/helpers/global_data.dart';
+import 'package:CampusCompass/screens/Attendance/Attendance_screen.dart';
+import 'package:CampusCompass/screens/Attendance/logic/attendance_cubit.dart';
+import 'package:CampusCompass/screens/Attendance/widgets/subject_card.dart';
+import 'package:CampusCompass/screens/BottomNavBar/logic/bottomnavbar_cubit.dart';
+import 'package:CampusCompass/screens/Canteen/admin/logic/daily_item_cubit.dart';
+import 'package:CampusCompass/screens/Canteen/admin/logic/food_item_cubit.dart';
+import 'package:CampusCompass/screens/Canteen/canteen_menu.dart';
+import 'package:CampusCompass/screens/Clubs/logic/clubs_cubit.dart';
+import 'package:CampusCompass/screens/Clubs/ui/clubs_screen.dart';
+import 'package:CampusCompass/screens/Library/logic/library_cubit.dart';
+import 'package:CampusCompass/screens/Library/ui/library_screen.dart';
+import 'package:CampusCompass/screens/Login/logic/login_cubit.dart';
+import 'package:CampusCompass/screens/QR%20Code%20+%20ID/Profile_screen.dart';
+import 'package:CampusCompass/screens/QR%20Code%20+%20ID/logic/result_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -37,6 +37,7 @@ class _LandingPageState extends State<LandingPage> {
             if (state is BottomNavProfile) {
               return AppBar(
                 title: const Text('Profile'),
+                backgroundColor: Colors.blue,
                 centerTitle: true,
                 actions: [
                   IconButton(
@@ -49,21 +50,25 @@ class _LandingPageState extends State<LandingPage> {
               );
             } else if (state is BottomNavClubs) {
               return AppBar(
+                backgroundColor: Colors.black54,
                 title: const Text('Clubs'),
                 centerTitle: true,
               );
             } else if (state is BottomNavLibrary) {
               return AppBar(
+                backgroundColor: Colors.green,
                 title: const Text('Library'),
                 centerTitle: true,
               );
             } else if (state is BottomNavAttendance) {
               return AppBar(
+                backgroundColor: Colors.pinkAccent,
                 title: const Text('Attendance'),
                 centerTitle: true,
               );
             } else if (state is BottomNavCanteen) {
               return AppBar(
+                backgroundColor: Colors.purple[300],
                 title: const Text('Canteen'),
                 centerTitle: true,
               );
@@ -132,31 +137,32 @@ class _LandingPageState extends State<LandingPage> {
         onTap: (newIndex) => setState(() {
           BlocProvider.of<BottomNavBarCubit>(context).changeIndex(newIndex);
         }),
-        items: const [
-          BottomNavigationBarItem(
+        items: [
+          const BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'Profile',
             backgroundColor: Colors.blue,
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.home_filled),
             label: 'Clubs',
-            backgroundColor: Colors.red,
+            backgroundColor: Colors.black54,
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.book),
             label: 'Library',
             backgroundColor: Colors.green,
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.school),
             label: 'Attendance',
-            backgroundColor: Colors.yellow,
+            backgroundColor: Colors.pinkAccent,
           ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.food_bank),
-              label: 'Canteen',
-              backgroundColor: Colors.purple),
+            icon: const Icon(Icons.food_bank),
+            label: 'Canteen',
+            backgroundColor: Colors.purple[300],
+          ),
         ],
       ),
     );

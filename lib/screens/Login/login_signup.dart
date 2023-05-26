@@ -1,10 +1,10 @@
 import 'dart:developer';
 
-import 'package:firebase/helpers/global_data.dart';
-import 'package:firebase/screens/Canteen/admin/admin_main.dart';
-import 'package:firebase/screens/Canteen/admin/logic/admin_cubit.dart';
-import 'package:firebase/screens/Login/logic/login_cubit.dart';
-import 'package:firebase/screens/QR%20Code%20+%20ID/Qr_Scan.dart';
+import 'package:CampusCompass/helpers/global_data.dart';
+import 'package:CampusCompass/screens/Canteen/admin/admin_main.dart';
+import 'package:CampusCompass/screens/Canteen/admin/logic/admin_cubit.dart';
+import 'package:CampusCompass/screens/Login/logic/login_cubit.dart';
+import 'package:CampusCompass/screens/QR%20Code%20+%20ID/Qr_Scan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

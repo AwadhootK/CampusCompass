@@ -26,7 +26,7 @@ class _QrCodeState extends State<QrCode> {
                   height: 20,
                 ),
                 Center(
-                  child: QrImage(
+                  child: QrImageView(
                     data: User.m!['UID'],
                     version: QrVersions.auto,
                     size: 250,

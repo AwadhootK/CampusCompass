@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:firebase/screens/Clubs/logic/clubs_cubit.dart';
-import 'package:firebase/screens/Clubs/ui/club_posts.dart';
-import 'package:firebase/screens/Clubs/ui/event_description.dart';
+import '../../../screens/Clubs/logic/clubs_cubit.dart';
+import '../../Clubs/ui/club_posts.dart';
+import '../../../screens/Clubs/ui/event_description.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -133,8 +133,9 @@ class _ClubEventState extends State<ClubEvent> {
     String clubName = ModalRoute.of(context)!.settings.arguments as String;
     List<Map<String, String>> event = User.events[clubName]!.values.toList();
     return Scaffold(
-      backgroundColor: Colors.blue[100],
+      backgroundColor: Colors.grey[200],
       appBar: AppBar(
+        backgroundColor: Colors.black54,
         title: Text(clubName),
         centerTitle: true,
       ),
@@ -194,6 +195,7 @@ class _ClubEventState extends State<ClubEvent> {
             ),
       floatingActionButton: (User.m!['UID'] == User.clubs[clubName])
           ? FloatingActionButton(
+              backgroundColor: Colors.black,
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(

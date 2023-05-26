@@ -1,7 +1,7 @@
 import 'dart:developer';
 
-import 'package:firebase/helpers/global_data.dart';
-import 'package:firebase/screens/Library/logic/library_cubit.dart';
+import 'package:CampusCompass/helpers/global_data.dart';
+import 'package:CampusCompass/screens/Library/logic/library_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,6 +23,7 @@ class _LibraryFormState extends State<LibraryForm> {
   final formKey = GlobalKey<FormState>();
   TextEditingController datecontrol = TextEditingController();
   TextEditingController datecontrol_return = TextEditingController();
+  TextEditingController datecontrol_return2 = TextEditingController();
   TextEditingController time_control = TextEditingController();
   TextEditingController date_control = TextEditingController();
   // late LibraryDetails currentBook;
@@ -69,9 +70,18 @@ class _LibraryFormState extends State<LibraryForm> {
                   TextFormField(
                     keyboardType: TextInputType.multiline,
                     textInputAction: TextInputAction.done,
-                    decoration: const InputDecoration(
-                      label: Text("Book Name"),
-                      labelStyle: TextStyle(fontStyle: FontStyle.italic),
+                    decoration: InputDecoration(
+                      // hintText: widget.uid.toUpperCase().substring(0, 11),
+                      labelText: 'Enter Book Name',
+                      border: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                      ),
+                      focusColor: Colors.green,
+                      enabledBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.green),
+                          borderRadius: BorderRadius.all(Radius.circular(12))),
                     ),
                     onSaved: (newValue) {
                       library['bookName'] = newValue ?? '';
@@ -82,9 +92,30 @@ class _LibraryFormState extends State<LibraryForm> {
                       return null;
                     },
                   ),
-                  TextButton(
-                    child: const Text("Issue Date"),
-                    onPressed: () async {
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextField(
+                    controller: date_control,
+                    // decoration: const InputDecoration(
+                    //   labelText: 'Date of Birth',
+                    //   prefixIcon: Icon(Icons.calendar_month),
+                    // ),
+                    decoration: const InputDecoration(
+                      prefixIcon: Icon(Icons.calendar_month),
+                      labelText: 'Book Issue Date',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                      ),
+                      fillColor: Colors.green,
+                      focusColor: Colors.green,
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.green),
+                          borderRadius: BorderRadius.all(Radius.circular(12))),
+                    ),
+                    onTap: () async {
                       DateTime? pickedDate = await showDatePicker(
                           context: context,
                           initialDate: DateTime.now(),
@@ -102,6 +133,8 @@ class _LibraryFormState extends State<LibraryForm> {
                         //you can implement different kind of Date Format here according to your requirement
 
                         setState(() {
+                          date_control.text =
+                              DateFormat('dd-MM-yyyy').format(pickedDate);
                           datecontrol.text = formattedDate;
                           library['issueDate'] = datecontrol
                               .text; //set output date to TextField value.
@@ -109,9 +142,57 @@ class _LibraryFormState extends State<LibraryForm> {
                       }
                     },
                   ),
-                  TextButton(
-                    child: const Text("Return Date"),
-                    onPressed: () async {
+                  // TextButton(
+                  //   child: const Text("Issue Date"),
+                  //   onPressed: () async {
+                  //     DateTime? pickedDate = await showDatePicker(
+                  //         context: context,
+                  //         initialDate: DateTime.now(),
+                  //         firstDate: DateTime(
+                  //           2000,
+                  //         ),
+                  //         lastDate: DateTime(2101));
+
+                  //     if (pickedDate != null) {
+                  //       print(
+                  //           pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
+                  //       String formattedDate = pickedDate.toIso8601String();
+                  //       print(
+                  //           formattedDate); //formatted date output using intl package =>  2021-03-16
+                  //       //you can implement different kind of Date Format here according to your requirement
+
+                  //       setState(() {
+                  //         datecontrol.text = formattedDate;
+                  //         library['issueDate'] = datecontrol
+                  //             .text; //set output date to TextField value.
+                  //       });
+                  //     }
+                  //   },
+                  // ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextField(
+                    controller: datecontrol_return2,
+                    // decoration: const InputDecoration(
+                    //   labelText: 'Date of Birth',
+                    //   prefixIcon: Icon(Icons.calendar_month),
+                    // ),
+                    decoration: const InputDecoration(
+                      prefixIcon: Icon(Icons.calendar_month),
+                      labelText: 'Book Return Date',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                      ),
+                      focusColor: Colors.green,
+                      fillColor: Colors.green,
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.green),
+                          borderRadius: BorderRadius.all(Radius.circular(12))),
+                    ),
+                    onTap: () async {
                       DateTime? pickedDate = await showDatePicker(
                         context: context,
                         initialDate: DateTime.now(),
@@ -126,13 +207,48 @@ class _LibraryFormState extends State<LibraryForm> {
 
                         returnDate = pickedDate;
                         setState(() {
+                          datecontrol_return2.text =
+                              DateFormat('yyyy-MM-dd').format(pickedDate);
                           datecontrol_return.text = formattedDate;
                           library['returnDate'] = datecontrol_return.text;
                         });
                       }
                     },
                   ),
-                  TextButton(
+                  // OutlinedButton(
+                  //   style: OutlinedButton.styleFrom(
+                  //       side: BorderSide(color: Colors.green)),
+                  //   child: const Text(
+                  //     "Return Date",
+                  //     style: TextStyle(color: Colors.green),
+                  //   ),
+                  //   onPressed: () async {
+                  //     DateTime? pickedDate = await showDatePicker(
+                  //       context: context,
+                  //       initialDate: DateTime.now(),
+                  //       firstDate: DateTime(2000),
+                  //       lastDate: DateTime(2101),
+                  //     );
+
+                  //     if (pickedDate != null) {
+                  //       log(pickedDate.toIso8601String());
+                  //       String formattedDate = pickedDate.toIso8601String();
+                  //       print(formattedDate);
+
+                  //       returnDate = pickedDate;
+                  //       setState(() {
+                  //         datecontrol_return.text = formattedDate;
+                  //         library['returnDate'] = datecontrol_return.text;
+                  //       });
+                  //     }
+                  //   },
+                  // ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: Colors.green)),
                     onPressed: () async {
                       DateTime? pickedDay = await showDatePicker(
                           context: context,
@@ -143,8 +259,7 @@ class _LibraryFormState extends State<LibraryForm> {
                           lastDate: DateTime(2101));
 
                       if (pickedDay != null) {
-                        log(pickedDay
-                            .toString()); 
+                        log(pickedDay.toString());
                         String formattedTime = pickedDay.toIso8601String();
                         log(formattedTime);
 
@@ -155,9 +270,14 @@ class _LibraryFormState extends State<LibraryForm> {
                         });
                       }
                     },
-                    child: const Text("Choose Date for Reminder"),
+                    child: const Text(
+                      "Choose Date for Reminder",
+                      style: TextStyle(color: Colors.green),
+                    ),
                   ),
-                  TextButton(
+                  OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: Colors.green)),
                     onPressed: () async {
                       TimeOfDay? pickedTime = await showTimePicker(
                         context: context,
@@ -174,9 +294,14 @@ class _LibraryFormState extends State<LibraryForm> {
                         });
                       }
                     },
-                    child: const Text("Choose Time for Reminder"),
+                    child: const Text(
+                      "Choose Time for Reminder",
+                      style: TextStyle(color: Colors.green),
+                    ),
                   ),
                   ElevatedButton(
+                    style:
+                        ElevatedButton.styleFrom(backgroundColor: Colors.green),
                     onPressed: () {
                       // log(timeOfDayToISOString(selectedTime));
                       DateTime dateTimeObj = DateFormat("yyyy-MM-dd")

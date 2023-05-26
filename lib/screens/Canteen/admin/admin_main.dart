@@ -1,12 +1,12 @@
-import 'package:firebase/screens/BottomNavBar/logic/bottomnavbar_cubit.dart';
-import 'package:firebase/screens/BottomNavBar/ui/landing_screen.dart';
-import 'package:firebase/screens/Canteen/admin/admin_signup.dart';
-import 'package:firebase/screens/Canteen/admin/logic/admin_cubit.dart';
-import 'package:firebase/screens/Canteen/admin/admin_home.dart';
-import 'package:firebase/screens/Canteen/admin/logic/daily_item_cubit.dart';
-import 'package:firebase/screens/Canteen/admin/logic/food_item_cubit.dart';
-import 'package:firebase/screens/Clubs/logic/clubs_cubit.dart';
-import 'package:firebase/screens/Login/login_signup.dart';
+import 'package:CampusCompass/screens/BottomNavBar/logic/bottomnavbar_cubit.dart';
+import 'package:CampusCompass/screens/BottomNavBar/ui/landing_screen.dart';
+import 'package:CampusCompass/screens/Canteen/admin/admin_signup.dart';
+import 'package:CampusCompass/screens/Canteen/admin/logic/admin_cubit.dart';
+import 'package:CampusCompass/screens/Canteen/admin/admin_home.dart';
+import 'package:CampusCompass/screens/Canteen/admin/logic/daily_item_cubit.dart';
+import 'package:CampusCompass/screens/Canteen/admin/logic/food_item_cubit.dart';
+import 'package:CampusCompass/screens/Clubs/logic/clubs_cubit.dart';
+import 'package:CampusCompass/screens/Login/login_signup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

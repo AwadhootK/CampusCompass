@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase/screens/Canteen/admin/models/food_item_model.dart';
+import 'package:CampusCompass/screens/Canteen/admin/models/food_item_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:developer';
 

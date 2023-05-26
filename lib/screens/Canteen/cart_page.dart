@@ -1,5 +1,5 @@
-import 'package:firebase/screens/Canteen/admin/logic/cart_cubit.dart';
-import 'package:firebase/screens/Canteen/admin/widgets/cart_item.dart';
+import 'package:CampusCompass/screens/Canteen/admin/logic/cart_cubit.dart';
+import 'package:CampusCompass/screens/Canteen/admin/widgets/cart_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

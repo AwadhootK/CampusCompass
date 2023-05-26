@@ -1,10 +1,10 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase/helpers/global_data.dart';
-import 'package:firebase/screens/Attendance/logic/attendance_cubit.dart';
-import 'package:firebase/screens/Attendance/pie_chart.dart';
-import 'package:firebase/screens/Attendance/widgets/subject_card.dart';
+import 'package:CampusCompass/helpers/global_data.dart';
+import 'package:CampusCompass/screens/Attendance/logic/attendance_cubit.dart';
+import 'package:CampusCompass/screens/Attendance/pie_chart.dart';
+import 'package:CampusCompass/screens/Attendance/widgets/subject_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pie_chart/pie_chart.dart';
@@ -43,14 +43,26 @@ class MyAttendanceForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(15.0),
       child: Form(
         key: _formKey,
         child: Column(
           children: [
+            const SizedBox(
+              height: 20,
+            ),
             TextFormField(
               decoration: const InputDecoration(
-                labelText: 'Subject Name',
+                labelText: 'Enter Subject Name',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10),
+                  ),
+                ),
+                focusColor: Colors.blue,
+                enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blue),
+                    borderRadius: BorderRadius.all(Radius.circular(12))),
               ),
               keyboardType: TextInputType.name,
               validator: (value) {
@@ -63,9 +75,21 @@ class MyAttendanceForm extends StatelessWidget {
                 details['name'] = value!;
               },
             ),
+            const SizedBox(
+              height: 20,
+            ),
             TextFormField(
               decoration: const InputDecoration(
-                labelText: 'Number of lectures conducted per week',
+                labelText: 'Enter Number of Lectures / week : ',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10),
+                  ),
+                ),
+                focusColor: Colors.blue,
+                enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blue),
+                    borderRadius: BorderRadius.all(Radius.circular(12))),
               ),
               keyboardType: TextInputType.number,
               validator: (value) {
@@ -79,9 +103,15 @@ class MyAttendanceForm extends StatelessWidget {
                 details['total'] = value;
               },
             ),
-            ElevatedButton(
+            const SizedBox(
+              height: 20,
+            ),
+            OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                  backgroundColor: Colors.blue[100],
+                  side: const BorderSide(color: Colors.blue)),
               onPressed: () => _saveForm(),
-              child: const Text('Save'),
+              child: const Text('Start Tracking'),
             ),
           ],
         ),
@@ -144,6 +174,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                 bottom: 10,
                 right: 13,
                 child: FloatingActionButton(
+                  backgroundColor: Colors.pinkAccent.shade100,
                   onPressed: () {
                     showModalBottomSheet(
                       context: context,
@@ -161,6 +192,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                 bottom: 10,
                 left: 13,
                 child: FloatingActionButton(
+                  backgroundColor: Colors.pinkAccent.shade100,
                   onPressed: () {
                     Map<String, double> dataMap = {};
                     for (var i = 0; i < state.details!.length; i++) {
@@ -186,7 +218,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             child: Text(state.error),
           );
         } else {
-          return Center(
+          return const Center(
             child: CircularProgressIndicator(),
           );
         }

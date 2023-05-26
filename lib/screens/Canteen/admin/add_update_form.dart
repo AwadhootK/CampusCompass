@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'dart:convert';
 
-import 'package:firebase/screens/Canteen/admin/logic/food_item_cubit.dart';
-import 'package:firebase/screens/Canteen/admin/models/food_item_model.dart';
+import 'package:CampusCompass/screens/Canteen/admin/logic/food_item_cubit.dart';
+import 'package:CampusCompass/screens/Canteen/admin/models/food_item_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';

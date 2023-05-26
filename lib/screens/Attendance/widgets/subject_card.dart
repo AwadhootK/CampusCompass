@@ -1,4 +1,4 @@
-import 'package:firebase/screens/Attendance/Attendance_screen.dart';
+import 'package:CampusCompass/screens/Attendance/Attendance_screen.dart';
 import 'package:flutter/material.dart';
 
 class SubjectCard extends StatefulWidget {

@@ -1,4 +1,4 @@
-import 'package:firebase/screens/Canteen/admin/logic/admin_cubit.dart';
+import 'package:CampusCompass/screens/Canteen/admin/logic/admin_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

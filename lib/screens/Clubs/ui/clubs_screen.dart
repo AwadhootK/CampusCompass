@@ -1,7 +1,7 @@
 import 'dart:developer';
 
-import 'package:firebase/screens/Clubs/ui/club_events.dart';
-import 'package:firebase/screens/Clubs/logic/clubs_cubit.dart';
+import 'package:CampusCompass/screens/Clubs/ui/club_events.dart';
+import 'package:CampusCompass/screens/Clubs/logic/clubs_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,17 +17,17 @@ class CustomCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.blue[900],
+      color: Colors.black,
       elevation: 7,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(5.0),
+        padding: const EdgeInsets.all(2.0),
         child: Column(
           children: [
             Container(
-              padding: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(30.0),
               decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
@@ -61,9 +61,9 @@ class CustomCard extends StatelessWidget {
               ),
             ),
             Container(
-              decoration: BoxDecoration(
-                color: Colors.blue[200],
-                borderRadius: const BorderRadius.only(
+              decoration: const BoxDecoration(
+                color: Colors.black,
+                borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(20.0),
                   bottomRight: Radius.circular(20.0),
                 ),
@@ -73,8 +73,8 @@ class CustomCard extends StatelessWidget {
               child: Center(
                 child: Text(
                   name,
-                  style: TextStyle(
-                    color: Colors.blue[900],
+                  style: const TextStyle(
+                    color: Colors.white,
                     fontSize: 16.0,
                     fontWeight: FontWeight.bold,
                   ),
@@ -111,7 +111,7 @@ class ClubsScreen extends StatelessWidget {
               BlocProvider.of<ClubsCubit>(context).fetchClubEvents();
             },
             child: Container(
-              color: Colors.blue[100],
+              color: Colors.black12,
               child: ListView.builder(
                 itemCount: state.l.length,
                 itemBuilder: (context, index) {
@@ -133,9 +133,12 @@ class ClubsScreen extends StatelessWidget {
                           ),
                         );
                       },
-                      child: CustomCard(
-                        name: state.l[index],
-                        imageUrl: state.clubLogos[state.l[index]]!,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: CustomCard(
+                          name: state.l[index],
+                          imageUrl: state.clubLogos[state.l[index]]!,
+                        ),
                       ),
                     ),
                   );
