@@ -82,6 +82,7 @@ class _LoginSignupState extends State<LoginSignup> {
       // setState(() {
       //   _isLoading = false;
       // });
+      
       var errorMsg = 'Authentication Failed! Please try again later...';
       if (error.exception.contains('EMAIL_EXISTS')) {
         errorMsg = 'Email already exists! Please login...';
